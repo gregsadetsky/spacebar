@@ -16,6 +16,14 @@ final class InputTests: XCTestCase {
         XCTAssertEqual(s, "a\u{FFFD}b")
     }
 
+    func testUTF16SubtitleText() throws {
+        let tmp = TempDir()
+        let original = "1\n00:00:01,000 --> 00:00:02,000\nHello 世界 🌊"
+        let url = tmp.write("captions.srt", data: original.data(using: .utf16)!)
+        guard case .text(let text) = try TextInput.load(url: url, manifest: manifest("subtitles")) else { return XCTFail() }
+        XCTAssertEqual(text, original)
+    }
+
     func testBytesInput() throws {
         let tmp = TempDir()
         let url = tmp.write("b.bin", data: Data([0, 1, 2, 255]))

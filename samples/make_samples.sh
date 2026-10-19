@@ -4,6 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 python3 -I make_notebooks.py
+python3 -I make_documents.py
 
 python3 -I - <<'PY'
 import json, random, plistlib, datetime
@@ -113,5 +114,10 @@ if [ -x "$CLI" ]; then
     "$CLI" dump "$file" plist > "$file.json"
   done
   echo "harness: plist JSON dumps"
+  for file in project.zip project.tar project.tar.gz project.7z project.rar unusual-paths.zip empty.zip; do
+    "$CLI" dump "$file" archive > "$file.json"
+  done
+  for file in field-notebook.epub untrusted.epub; do "$CLI" dump "$file" epub > "$file.json"; done
+  echo "harness: archive and EPUB JSON dumps"
 fi
 ls -la *.geojson *.sqlite3* *.db *.plist

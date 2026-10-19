@@ -1,0 +1,22 @@
+{
+  "id": "subtitles",
+  "name": "Subtitles",
+  "version": "0.1.0",
+  "matches": {
+    "extensions": [
+      "srt",
+      "vtt"
+    ],
+    "utis": [
+      "io.spacebar.srt",
+      "org.matroska.srt",
+      "public.srt",
+      "com.goodsnooze.srt",
+      "org.w3.webvtt"
+    ]
+  },
+  "input": "text",
+  "maxFileSize": 10485760,
+  "entry": "index.html",
+  "requiresHost": "0.2.0"
+}

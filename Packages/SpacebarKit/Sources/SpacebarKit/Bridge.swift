@@ -16,6 +16,7 @@ public enum Bridge {
         // JSON.parse preserves literal dictionary keys such as __proto__.
         case .json(let obj), .plist(let obj): data = "JSON.parse(\(try jsLiteral(jsLiteral(obj))))"
         case .sqlite(let obj): data = try jsLiteral(obj)
+        case .archive(let obj), .epub(let obj): data = "JSON.parse(\(try jsLiteral(jsLiteral(obj))))"
         }
         return """
         (function () {

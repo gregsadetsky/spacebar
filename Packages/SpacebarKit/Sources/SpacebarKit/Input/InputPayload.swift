@@ -7,6 +7,8 @@ public enum InputError: Error, Equatable, CustomStringConvertible {
     case invalidPlist(String)
     case notSQLite
     case sqlite(String)
+    case archive(String)
+    case epub(String)
 
     public var description: String {
         switch self {
@@ -17,6 +19,8 @@ public enum InputError: Error, Equatable, CustomStringConvertible {
         case .invalidPlist(let m): return "could not preview property list: \(m)"
         case .notSQLite: return "not a SQLite database (bad header)"
         case .sqlite(let m): return "sqlite: \(m)"
+        case .archive(let m): return "could not preview archive: \(m)"
+        case .epub(let m): return "could not preview EPUB: \(m)"
         }
     }
 
@@ -34,6 +38,8 @@ public enum InputPayload {
     case json(Any)
     case plist(Any)
     case sqlite([String: Any])
+    case archive([String: Any])
+    case epub([String: Any])
 
     public var kind: InputKind {
         switch self {
@@ -42,6 +48,8 @@ public enum InputPayload {
         case .json: return .json
         case .plist: return .plist
         case .sqlite: return .sqlite
+        case .archive: return .archive
+        case .epub: return .epub
         }
     }
 }
@@ -65,6 +73,8 @@ public enum InputLoader {
         case .json: return try JSONInput.load(url: url, manifest: manifest)
         case .plist: return try PlistInput.load(url: url, manifest: manifest)
         case .sqlite: return try SQLiteInput.load(url: url, manifest: manifest)
+        case .archive: return try ArchiveInput.load(url: url, manifest: manifest)
+        case .epub: return try EPUBInput.load(url: url, manifest: manifest)
         }
     }
 

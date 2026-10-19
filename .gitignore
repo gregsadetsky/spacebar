@@ -17,3 +17,12 @@ samples/*.plist
 .claude-logs/
 node_modules/
 samples/*.ipynb
+samples/*.md
+samples/*.zip
+samples/*.tar
+samples/*.gz
+samples/*.7z
+samples/*.rar
+samples/*.epub
+samples/*.srt
+samples/*.vtt

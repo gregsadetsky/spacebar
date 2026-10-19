@@ -17,13 +17,13 @@ for dir in plugins/*/; do
   done
   if [ "$(jq -r .id "$m")" != "$id" ]; then echo "FAIL $id: id \"$(jq -r .id "$m")\" does not match folder name"; fail=1; fi
   if ! jq -r .version "$m" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then echo "FAIL $id: version is not x.y.z"; fail=1; fi
-  if ! jq -r .input "$m" | grep -Eq '^(text|bytes|json|plist|sqlite)$'; then echo "FAIL $id: input must be text|bytes|json|plist|sqlite"; fail=1; fi
+  if ! jq -r .input "$m" | grep -Eq '^(text|bytes|json|plist|sqlite|archive|epub)$'; then echo "FAIL $id: input must be text|bytes|json|plist|sqlite|archive|epub"; fail=1; fi
   entry=$(jq -r '.entry // "index.html"' "$m")
   if [ ! -f "$dir/$entry" ]; then echo "FAIL $id: entry \"$entry\" does not exist"; fail=1; fi
   if jq -r '.matches.extensions // [] | .[]' "$m" | grep -Eqv '^[a-z0-9]+$'; then echo "FAIL $id: extensions must be lowercase, no dot"; fail=1; fi
   if [ "$(jq -r '(.matches.extensions // [] | length) + (.matches.utis // [] | length)' "$m")" = "0" ]; then echo "FAIL $id: matches is empty"; fail=1; fi
   # urls in code are a bug (plugins are offline); urls in // or /* comments are fine
-  hits=$(find "$dir" -path 'plugins/notebook/vendor' -prune -o -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) -exec grep -HnE 'https?://' {} + 2>/dev/null \
+  hits=$(find "$dir" \( -path 'plugins/notebook/vendor' -o -path 'plugins/markdown/vendor' -o -path 'plugins/archive/vendor' -o -path 'plugins/epub/vendor' -o -path 'plugins/subtitles/vendor' \) -prune -o -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) -exec grep -HnE 'https?://' {} + 2>/dev/null \
          | grep -vE '^[^:]+:[0-9]+:\s*(//|/\*|\*|<!--)' | grep -vE 'https?://www\.w3\.org/' || true)
   if [ -n "$hits" ]; then
     echo "$hits"; echo "FAIL $id: http(s):// url found in code above (plugins are offline)"; fail=1

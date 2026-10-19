@@ -1,4 +1,4 @@
-Third-party code bundled in the Spacebar notebook plugin.
+Third-party code bundled in this Spacebar plugin.
 
 
 === @jupyterlab/coreutils 6.6.4 (BSD-3-Clause) ===

@@ -19,12 +19,12 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: tools/notebook/package-lock.json
-      - name: notebook bundle and rendering tests
+      - name: viewer bundles and rendering tests
         run: |
           npm ci --prefix tools/notebook --ignore-scripts
           npm run build --prefix tools/notebook
           npm test --prefix tools/notebook
-          git diff --exit-code -- plugins/notebook/vendor
+          git diff --exit-code -- plugins
       - name: test (real XCTest on the runner)
         run: make test
       - run: make build

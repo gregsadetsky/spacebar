@@ -53,24 +53,29 @@
   mac (find ~ -type f, group by extension, ignore caches and node_modules),
   and read the issue trackers / supported lists of the open source quick
   look apps (glance, quicklookjs, SourceCodeSyntaxHighlight, QLMarkdown,
-  OnePreview, Parkour) for what people ask for. Plist and ipynb now implemented.
+  OnePreview, Parkour) for what people ask for. Plist, ipynb, Markdown,
+  archives, EPUB and subtitles now implemented locally; release pending.
 
-- `.tar.gz` / `.tar` / `.zip`: list the entries (name, size, date) like a
-  file browser. the host can do the listing natively with libarchive
-  (ships with macos, /usr/lib/libarchive.dylib) as a new `archive` input, so
-  plugins never touch the bytes. "click an entry to get just that file" (the
-  winrar move) needs the host to extract and hand the file somewhere: a
+- `.tar.gz` / `.tar` / `.zip` / `.7z` / `.rar`: implemented locally with
+  native libarchive input, folder browsing, search, sizes and dates.
+  ZIP reaches Spacebar through the real Finder extension on this Mac.
+  "click an entry to get just that file" (the winrar move) still needs
+  the host to extract and hand the file somewhere: a
   sandboxed extension can't write to ~/Downloads on its own, so this would
-  be a host action (save panel? reveal via the app?). research. note that
-  macos already handles .zip with its own preview; whether a third-party
-  extension can take `public.zip-archive` over apple's is untested.
+  be a host action (save panel? reveal via the app?). research.
 - `.dmg`: no obvious way. hdiutil can't run in the sandbox and libarchive
   doesn't read dmg. maybe show the embedded metadata only. low priority.
-- `.json` / `.md` / `.csv` / `.yaml`: obvious, but apple previews these
+- `.md`: implemented locally with rendered Markdown, math, highlighted
+  code, contents and source view. Finder routing verified.
+- `.epub`: implemented locally with EPUB 2/3 metadata, cover, contents,
+  chapter navigation and a bounded excerpt (first 12 sections). DRM and
+  publisher stylesheets are unsupported. Finder routing verified.
+- `.json` / `.csv` / `.yaml`: obvious, but apple previews these
   itself and may not let third parties override them (the brief says json,
   csv, xml, plist are reserved; `public.geojson` conforms to `public.json`
-  and still reached us, so test before assuming). a nicer json tree, a
-  rendered markdown, a csv with real columns would all be popular.
+  and still reached us, so test before assuming). a nicer json tree or
+  better csv navigation might be useful. macOS already renders CSV as a
+  table; it is not a missing-format priority.
 - the gap others fill, for a feel of demand: OnePreview (json, jsonl, yaml,
   xml, csv, tsv, toml), Parkour (parquet, csv, json, arrow), the VS Code
   data preview extension (parquet, arrow, avro, json, yaml, csv, excel).
@@ -169,18 +174,17 @@ ableton sets.
      of npy. easy and safe.
    - `.h5`: hdf5 group/dataset tree; needs a vendored hdf5 reader (jsfive
      exists) or a native one. medium.
-5. **srt/vtt** subtitles (1000+ here): timestamps + text, trivial, text
-   input. show cue number, start → end, text; maybe total duration and cue
-   count at the top. both utis exist on macos? check with spacebar-cli
-   match; claim them in a host release if needed.
+5. **srt/vtt: implemented locally, release + cask bump pending.** Cue
+   timestamps, count, duration, search, transcript view and paging. Supports
+   UTF-8 and BOM-marked UTF-16; skips malformed cues with a visible count.
+   Claims the system and known subtitle-app UTIs, including MacWhisper's
+   `com.goodsnooze.srt` on this Mac. Real Finder routing verified.
 6. **tsv**: finder shows nothing useful for .tsv today (checked 2026-10-19),
    so this is a clear win: real columns, sortable like the sqlite viewer,
    `public.tab-separated-values-text` to claim. vendor papaparse or
-   hand-roll a tab splitter. **csv**: finder does preview it (as plain
-   text, not great). plist proved apple yields to a third-party extension
-   on 15.7, so a csv plugin with real columns is probably possible too;
-   same plugin, second uti (`public.comma-separated-values-text`), test
-   first.
+   hand-roll a tab splitter. Low priority per user: TSV is rare for them.
+   **csv**: Finder already renders a table. Improving it is optional;
+   claim `public.comma-separated-values-text` and test routing if revisited.
 7. **stl** (1074, apple already previews 3d), **step/dxf**: skip for now.
 8. **.env / .lock / .log**: text with light highlighting; cheap, but
    .env is a dotfile with no extension in finder's eyes (uti lookup by
@@ -190,6 +194,18 @@ a fresh agent doing one of these: read PLUGINS.md, then
 `scripts/new-plugin.sh <id> <ext>`, and check whether the uti is already
 in Extension/Info.plist (plist is now claimed; csv, tsv and Ableton still
 need host changes and a release before Homebrew users can preview them).
+
+### document preview verification (2026-10-19)
+
+All four new groups (Markdown, archives including ZIP, EPUB, subtitles) are
+implemented, installed locally and waiting for a release + cask bump.
+64 native tests and 12 bundle tests pass. Real Quick Look checks covered
+Markdown, ZIP/TAR/TAR.GZ/7z/RAR, EPUB, SRT, VTT and UTF-16 SRT (178–275 ms),
+plus the expected invalid-file errors. Native WebKit interaction checks
+covered Markdown source/contents/math, archive folders/search, decoded EPUB
+covers and illustrations, chapter navigation, subtitle paging/search/
+transcript, dark mode and hostile content sanitization. Samples are generated
+by `samples/make_documents.py`; limits are documented in PLUGINS.md.
 
 ## plugins with a build step (typescript, vite)
 

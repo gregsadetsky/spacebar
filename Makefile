@@ -29,6 +29,7 @@ KIT_DIR      := $(BUILD)/kit
 KIT_LIB      := $(KIT_DIR)/libSpacebarKit.a
 
 KIT_SRC      := $(shell find Packages/SpacebarKit/Sources/SpacebarKit -name '*.swift')
+ARCHIVE_HEADERS := $(wildcard Packages/SpacebarKit/Sources/CArchive/*)
 EXT_SRC      := $(shell find Extension -name '*.swift')
 APP_SRC      := $(shell find App -name '*.swift') Extension/PreviewWebView.swift
 PLUGIN_FILES := $(shell find plugins -type f 2>/dev/null)
@@ -39,14 +40,14 @@ else
 OPT := -Onone -g -DDEBUG
 endif
 
-SWIFTC := swiftc -sdk $(SDK) -target $(TARGET) $(OPT) -parse-as-library -swift-version 5
+SWIFTC := swiftc -sdk $(SDK) -target $(TARGET) $(OPT) -parse-as-library -swift-version 5 -I Packages/SpacebarKit/Sources/CArchive -larchive
 
 .PHONY: all build kit cli icon test samples samples-huge install uninstall smoke release clean
 
 all: build
 
 # --- SpacebarKit as a static library both executables link against -----------
-$(KIT_LIB): $(KIT_SRC)
+$(KIT_LIB): $(KIT_SRC) $(ARCHIVE_HEADERS)
 	@mkdir -p $(KIT_DIR)
 	$(SWIFTC) -module-name SpacebarKit -emit-library -static -emit-module \
 		-emit-module-path $(KIT_DIR)/SpacebarKit.swiftmodule \

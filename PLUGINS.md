@@ -78,7 +78,7 @@ plugins folder ("open plugins folder" in the app). folder name = `id`.
 - `matches.extensions`: lowercase, no dot. `matches.utis` optional.
   an exact uti match beats an extension match; within a tier the enabled
   plugin with the highest `priority` wins, ties go alphabetically by id
-- `input`: `text` | `bytes` | `json` | `plist` | `sqlite`, see below
+- `input`: `text` | `bytes` | `json` | `plist` | `sqlite` | `archive` | `epub`, see below
 - `maxFileSize`: bytes, default 50 MB. bigger files get an error view,
   the plugin never runs
 - `entry`: default `index.html`
@@ -114,7 +114,8 @@ rejections turn into `fail()`.
 
 payload shapes by `input`:
 
-- `text`: the file as a string (utf-8, invalid bytes become U+FFFD)
+- `text`: the file as a string (UTF-8, or UTF-16 when marked with a byte-order
+  mark; invalid UTF-8 bytes become U+FFFD)
 - `bytes`: base64 string. keep `maxFileSize` small
 - `json`: parsed object (parse errors become a host error view)
 - `plist` (host 0.2.0+): the root value parsed natively from a binary, XML or
@@ -154,6 +155,62 @@ payload shapes by `input`:
 that takes over 200 ms is skipped (`rowCount: null, approx: true`). samples
 stop past ~2 MB total (`truncated: true`).
 
+### archive (host 0.2.0+)
+
+The host lists ZIP, TAR, gzip/bzip2/xz-compressed TAR, 7z and RAR using macOS's
+system libarchive. It never extracts files to disk or follows archive links.
+
+```json
+{
+  "format": "ZIP 2.0 (deflation)",
+  "entries": [{
+    "path": "project/readme.md", "kind": "file", "size": 1024,
+    "modified": "2026-10-19T12:00:00Z", "encrypted": false, "unsafePath": false
+  }],
+  "truncated": false,
+  "warnings": []
+}
+```
+
+`kind` is `file`, `directory`, `link` or `special`. `modified` is optional;
+links can also have a `target`. Sizes outside JavaScript's safe integer range
+are decimal strings. Unusual paths (absolute paths or `..`, for example) are
+flagged and remain literal names. Encryption may prevent even a listing.
+
+Limits: 10,000 entries, 2 MiB of path text and 4,096 characters per displayed
+path. A two-second budget is checked between libarchive reads; a single native
+read can take longer. Compressed sequential listings stop before skipping an
+entry larger than 64 MiB. Partial listings carry warnings. The bundled plugin
+accepts files up to 512 MiB and displays 200 rows at a time.
+
+### epub (host 0.2.0+)
+
+The host reads EPUB 2/3 package metadata and a bounded excerpt from the ZIP
+container. Chapters are untrusted HTML: a plugin must sanitize them before
+inserting them into the DOM. The bundled viewer uses DOMPurify.
+
+```json
+{
+  "title": "Field Notebook", "authors": ["A. Reader"], "language": "en",
+  "cover": "data:image/png;base64,…",
+  "toc": [{ "title": "Introduction", "path": "OEBPS/intro.xhtml" }],
+  "chapters": [{ "title": "Introduction", "path": "OEBPS/intro.xhtml", "html": "…" }],
+  "resources": { "OEBPS/cover.png": "data:image/png;base64,…" },
+  "totalChapters": 30, "truncated": true
+}
+```
+
+`cover` is an empty string if unavailable. Paths are relative to the container;
+resources are embedded PNG/JPEG/GIF/WebP images. No external resources or
+publisher stylesheets are loaded. DRM-protected books are unsupported.
+
+Limits: the first 12 linear HTML sections, 1 MiB per document and 6 MiB of
+documents total; up to 64 images, 2 MiB each and 8 MiB total. Metadata XML has
+depth/node caps and entity declarations are rejected. Archive reads share a
+four-second budget checked between reads. `truncated` means sections or images
+were omitted; the viewer labels the excerpt. The bundled plugin accepts EPUBs
+up to 256 MiB.
+
 ## rules
 
 - call `done()` or `fail()` within 3 seconds or the host shows "timed out"
@@ -180,7 +237,8 @@ python3 -m http.server 8000
 open "http://localhost:8000/harness/?plugin=geojson&sample=cities.geojson"
 ```
 
-for `sqlite` and `plist` plugins the harness loads `samples/<file>.json`, written by
+for `sqlite`, `plist`, `archive` and `epub` plugins the harness loads
+`samples/<file>.json`, written by
 `make samples` with the real host-side payload. to dump a file yourself
 (`make cli` builds the tool first):
 
@@ -202,7 +260,21 @@ notebooks. Its checked-in JupyterLab-based bundle requires no downloads at
 runtime or during a normal app build. To change it, see
 [tools/notebook/README.md](tools/notebook/README.md).
 
+The same build tooling produces the Markdown, archive, EPUB and subtitle
+bundles. Their browser harness examples are:
+
+```
+http://localhost:8000/harness/?plugin=markdown&sample=guide.md
+http://localhost:8000/harness/?plugin=archive&sample=project.zip
+http://localhost:8000/harness/?plugin=epub&sample=field-notebook.epub
+http://localhost:8000/harness/?plugin=subtitles&sample=dialogue.srt
+```
+
+`make samples` also generates TAR, compressed TAR, 7z, RAR, WebVTT, UTF-16
+subtitles, large cue lists and malformed/untrusted documents. UTF-16 fixtures
+are tested through the native host; the browser harness fetches text as UTF-8.
+
 `scripts/validate-plugins.sh` checks every plugin in `plugins/` (manifest
-keys, entry exists, no http URLs in first-party code). Notebook vendor code
+keys, entry exists, no http URLs in first-party code). The generated vendor code
 contains inert upstream URL constants and is covered by bundle tests and the
 host's runtime network block.

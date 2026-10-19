@@ -9,7 +9,8 @@ import Foundation
 let useShim = ProcessInfo.processInfo.environment["SPACEBAR_XCTEST_SHIM"] == "1"
 
 var targets: [Target] = [
-    .target(name: "SpacebarKit", linkerSettings: [.linkedLibrary("sqlite3")]),
+    .systemLibrary(name: "CArchive"),
+    .target(name: "SpacebarKit", dependencies: ["CArchive"], linkerSettings: [.linkedLibrary("sqlite3"), .linkedLibrary("archive")]),
     .executableTarget(name: "spacebar-cli", dependencies: ["SpacebarKit"]),
 ]
 var products: [Product] = [

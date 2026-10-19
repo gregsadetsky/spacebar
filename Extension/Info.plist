@@ -59,6 +59,22 @@
 				<string>io.spacebar.hdf5</string>
 				<string>io.spacebar.fit</string>
 				<string>io.spacebar.tcx</string>
+				<string>net.daringfireball.markdown</string>
+				<string>public.zip-archive</string>
+				<string>public.tar-archive</string>
+				<string>org.gnu.gnu-zip-archive</string>
+				<string>org.gnu.gnu-zip-tar-archive</string>
+				<string>public.bzip2-archive</string>
+				<string>org.tukaani.xz-archive</string>
+				<string>org.7-zip.7-zip-archive</string>
+				<string>com.rarlab.rar-archive</string>
+				<string>org.idpf.epub-container</string>
+				<string>io.spacebar.srt</string>
+				<string>org.matroska.srt</string>
+				<string>public.srt</string>
+				<string>com.goodsnooze.srt</string>
+				<string>org.w3.webvtt</string>
+				<string>io.spacebar.compressed-tar</string>
 			</array>
 			<key>QLSupportsSearchableItems</key>
 			<false/>

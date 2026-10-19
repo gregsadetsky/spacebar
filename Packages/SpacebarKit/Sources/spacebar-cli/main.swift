@@ -1,11 +1,11 @@
 // spacebar-cli: tiny helper for plugin authors and the browser harness.
-//   spacebar-cli dump <file> [text|bytes|json|plist|sqlite]   print the payload a plugin would get, as json
+//   spacebar-cli dump <file> [text|bytes|json|plist|sqlite|archive|epub]
 //   spacebar-cli match <file>                            which installed plugin would preview this file
 import Foundation
 import SpacebarKit
 
 func usage() -> Never {
-    FileHandle.standardError.write(Data("usage: spacebar-cli dump <file> [text|bytes|json|plist|sqlite]\n       spacebar-cli match <file>\n".utf8))
+    FileHandle.standardError.write(Data("usage: spacebar-cli dump <file> [text|bytes|json|plist|sqlite|archive|epub]\n       spacebar-cli match <file>\n".utf8))
     exit(2)
 }
 
@@ -26,6 +26,8 @@ do {
             case "sqlite", "sqlite3", "db": kind = .sqlite
             case "plist": kind = .plist
             case "json": kind = .json
+            case "epub": kind = .epub
+            case "zip", "tar", "tgz", "gz", "bz2", "tbz", "tbz2", "xz", "txz", "7z", "rar": kind = .archive
             default: kind = .text
             }
         }
@@ -38,6 +40,7 @@ do {
         case .json(let o): value = o
         case .plist(let o): value = o
         case .sqlite(let o): value = o
+        case .archive(let o), .epub(let o): value = o
         }
         let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed, .prettyPrinted, .sortedKeys])
         FileHandle.standardOutput.write(data)
