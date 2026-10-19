@@ -30,3 +30,30 @@
 - web/: not deployed (disco.json is there); og:image url assumes
   spacebar.greg.technology; no favicon yet
 - finder and the dock may keep the old icon until their cache refreshes
+
+## plugin ideas
+
+- `.tar.gz` / `.tar` / `.zip`: list the entries (name, size, date) like a
+  file browser. the host can do the listing natively with libarchive
+  (ships with macos, /usr/lib/libarchive.dylib) as a new `archive` input, so
+  plugins never touch the bytes. "click an entry to get just that file" (the
+  winrar move) needs the host to extract and hand the file somewhere: a
+  sandboxed extension can't write to ~/Downloads on its own, so this would
+  be a host action (save panel? reveal via the app?). research. note that
+  macos already handles .zip with its own preview; whether a third-party
+  extension can take `public.zip-archive` over apple's is untested.
+- `.dmg`: no obvious way. hdiutil can't run in the sandbox and libarchive
+  doesn't read dmg. maybe show the embedded metadata only. low priority.
+- `.json` / `.md` / `.csv` / `.yaml`: obvious, but apple previews these
+  itself and may not let third parties override them (the brief says json,
+  csv, xml, plist are reserved; `public.geojson` conforms to `public.json`
+  and still reached us, so test before assuming). a nicer json tree, a
+  rendered markdown, a csv with real columns would all be popular.
+- the gap others fill, for a feel of demand: OnePreview (json, jsonl, yaml,
+  xml, csv, tsv, toml), Parkour (parquet, csv, json, arrow), the VS Code
+  data preview extension (parquet, arrow, avro, json, yaml, csv, excel).
+  parquet keeps coming up as the one nothing on the mac previews.
+- other candidates already in QLSupportedContentTypes with no plugin yet:
+  parquet, arrow/feather, ipynb (render cells + outputs), toml, kml, mbtiles
+  / pmtiles (map), har, jsonl, wasm (exports/imports), npy/npz, h5, fit/tcx
+  (track on the map, reusing the geojson renderer).
