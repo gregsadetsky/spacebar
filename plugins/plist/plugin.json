@@ -1,0 +1,9 @@
+{
+  "id": "plist",
+  "name": "plist",
+  "version": "0.1.0",
+  "matches": { "extensions": ["plist"] },
+  "input": "plist",
+  "maxFileSize": 10485760,
+  "entry": "index.html"
+}

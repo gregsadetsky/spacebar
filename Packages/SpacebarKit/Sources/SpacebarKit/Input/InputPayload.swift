@@ -4,6 +4,7 @@ public enum InputError: Error, Equatable, CustomStringConvertible {
     case fileTooLarge(size: Int, limit: Int)
     case unreadable(String)
     case invalidJSON(String)
+    case invalidPlist(String)
     case notSQLite
     case sqlite(String)
 
@@ -13,6 +14,7 @@ public enum InputError: Error, Equatable, CustomStringConvertible {
             return "file is \(InputError.mb(size)) MB, plugin limit is \(InputError.mb(limit)) MB"
         case .unreadable(let m): return "could not read file: \(m)"
         case .invalidJSON(let m): return "not valid JSON: \(m)"
+        case .invalidPlist(let m): return "could not preview property list: \(m)"
         case .notSQLite: return "not a SQLite database (bad header)"
         case .sqlite(let m): return "sqlite: \(m)"
         }
@@ -24,12 +26,13 @@ public enum InputError: Error, Equatable, CustomStringConvertible {
     }
 }
 
-/// what gets injected as `spacebar.data`. `.json` and `.sqlite` carry a
+/// what gets injected as `spacebar.data`. `.json`, `.plist` and `.sqlite` carry a
 /// JSONSerialization-compatible object graph.
 public enum InputPayload {
     case text(String)
     case bytes(Data)
     case json(Any)
+    case plist(Any)
     case sqlite([String: Any])
 
     public var kind: InputKind {
@@ -37,6 +40,7 @@ public enum InputPayload {
         case .text: return .text
         case .bytes: return .bytes
         case .json: return .json
+        case .plist: return .plist
         case .sqlite: return .sqlite
         }
     }
@@ -59,6 +63,7 @@ public enum InputLoader {
         case .text: return try TextInput.load(url: url, manifest: manifest)
         case .bytes: return try BytesInput.load(url: url, manifest: manifest)
         case .json: return try JSONInput.load(url: url, manifest: manifest)
+        case .plist: return try PlistInput.load(url: url, manifest: manifest)
         case .sqlite: return try SQLiteInput.load(url: url, manifest: manifest)
         }
     }

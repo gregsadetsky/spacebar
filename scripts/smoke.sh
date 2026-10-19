@@ -55,6 +55,7 @@ expect samples/invalid.geojson 'plugin=geojson .* outcome=failed: Not valid GeoJ
 expect samples/library.sqlite3 'plugin=sqlite .* outcome=done'
 expect samples/wal.sqlite3     'plugin=sqlite .* outcome=done'
 expect samples/notadb.sqlite3  'plugin=sqlite .* outcome=host error: not a SQLite database'
+expect samples/notadb.db       'plugin=sqlite ext=db .* outcome=host error: not a SQLite database'
 
 echo "== matcher via cli"
 if $CLI match samples/cities.geojson | grep -q "^geojson"; then pass "cli match geojson"; else bad "cli match geojson"; fi

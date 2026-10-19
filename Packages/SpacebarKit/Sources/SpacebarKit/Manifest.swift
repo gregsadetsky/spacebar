@@ -1,7 +1,7 @@
 import Foundation
 
 public enum InputKind: String, Codable, CaseIterable, Sendable {
-    case text, bytes, json, sqlite
+    case text, bytes, json, plist, sqlite
 }
 
 public enum ManifestError: Error, Equatable, CustomStringConvertible {

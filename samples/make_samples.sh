@@ -66,7 +66,7 @@ json.dump({"hello": "world", "items": [1, 2, 3], "nested": {"ok": True}}, open("
 print("geojson: cities, shapes, big, invalid")
 PY
 
-rm -f library.sqlite3 wal.sqlite3 wal.sqlite3-wal wal.sqlite3-shm notadb.sqlite3
+rm -f library.sqlite3 wal.sqlite3 wal.sqlite3-wal wal.sqlite3-shm notadb.sqlite3 notadb.db
 sqlite3 library.sqlite3 < make_sqlite.sql
 cp library.sqlite3 wal.sqlite3
 sqlite3 wal.sqlite3 "PRAGMA journal_mode=WAL; INSERT INTO notes (body) VALUES ('written in wal mode, not yet checkpointed');"
@@ -74,6 +74,7 @@ sqlite3 wal.sqlite3 "PRAGMA journal_mode=WAL; INSERT INTO notes (body) VALUES ('
 # read-only open fails unless the host uses immutable=1
 rm -f wal.sqlite3-wal wal.sqlite3-shm
 printf 'this is not a database, just text with a .sqlite3 extension\n' > notadb.sqlite3
+printf 'SQLite format 3 is not what this is; a .db that is not sqlite\n' > notadb.db
 echo "sqlite: library, wal, notadb"
 
 if [ "${HUGE:-0}" = "1" ]; then
@@ -87,4 +88,4 @@ fi
 # payload dump for the browser harness, when the cli has been built
 CLI="../Packages/SpacebarKit/.build/debug/spacebar-cli"
 if [ -x "$CLI" ]; then "$CLI" dump library.sqlite3 > library.sqlite3.json && echo "harness: library.sqlite3.json"; fi
-ls -la *.geojson *.sqlite3*
+ls -la *.geojson *.sqlite3* *.db

@@ -10,6 +10,7 @@ xcuserdata/
 samples/*.geojson
 samples/*.sqlite3
 samples/*.sqlite3-*
+samples/*.db
 samples/*.json
 .swiftpm/
 .claude-logs/

@@ -2,7 +2,7 @@
 # scaffold a plugin that works right away:  scripts/new-plugin.sh <id> <ext> [input]
 #   id     folder + plugin id, [a-z0-9-]
 #   ext    file extension it previews, no dot
-#   input  text (default) | bytes | json | sqlite
+#   input  text (default) | bytes | json | plist | sqlite
 # the host only previews extensions it was built with; see Extension/Info.plist.
 set -euo pipefail
 id="${1:?id}"; ext="${2:?extension}"; input="${3:-text}"

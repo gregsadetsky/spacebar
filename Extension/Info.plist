@@ -28,6 +28,9 @@
 		<dict>
 			<key>QLSupportedContentTypes</key>
 			<array>
+				<string>com.apple.property-list</string>
+				<string>com.apple.xml-property-list</string>
+				<string>com.apple.binary-property-list</string>
 				<string>public.geojson</string>
 				<string>com.topografix.gpx</string>
 				<string>public.ndjson</string>

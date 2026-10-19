@@ -1,11 +1,11 @@
 // spacebar-cli: tiny helper for plugin authors and the browser harness.
-//   spacebar-cli dump <file> [text|bytes|json|sqlite]   print the payload a plugin would get, as json
+//   spacebar-cli dump <file> [text|bytes|json|plist|sqlite]   print the payload a plugin would get, as json
 //   spacebar-cli match <file>                            which installed plugin would preview this file
 import Foundation
 import SpacebarKit
 
 func usage() -> Never {
-    FileHandle.standardError.write(Data("usage: spacebar-cli dump <file> [text|bytes|json|sqlite]\n       spacebar-cli match <file>\n".utf8))
+    FileHandle.standardError.write(Data("usage: spacebar-cli dump <file> [text|bytes|json|plist|sqlite]\n       spacebar-cli match <file>\n".utf8))
     exit(2)
 }
 
@@ -22,7 +22,12 @@ do {
             guard let k = InputKind(rawValue: raw) else { usage() }
             kind = k
         } else {
-            kind = ["sqlite", "sqlite3", "db"].contains(file.ext) ? .sqlite : (file.ext == "json" ? .json : .text)
+            switch file.ext {
+            case "sqlite", "sqlite3", "db": kind = .sqlite
+            case "plist": kind = .plist
+            case "json": kind = .json
+            default: kind = .text
+            }
         }
         let manifest = Manifest(id: "cli", name: "cli", version: "0.0.0", matches: .init(extensions: [file.ext]), input: kind, maxFileSize: .max)
         let payload = try InputLoader.load(kind: kind, url: url, manifest: manifest)
@@ -31,6 +36,7 @@ do {
         case .text(let s): value = s
         case .bytes(let d): value = d.base64EncodedString()
         case .json(let o): value = o
+        case .plist(let o): value = o
         case .sqlite(let o): value = o
         }
         let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed, .prettyPrinted, .sortedKeys])

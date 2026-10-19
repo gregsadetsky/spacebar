@@ -16,7 +16,7 @@ for dir in plugins/*/; do
   done
   if [ "$(jq -r .id "$m")" != "$id" ]; then echo "FAIL $id: id \"$(jq -r .id "$m")\" does not match folder name"; fail=1; fi
   if ! jq -r .version "$m" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then echo "FAIL $id: version is not x.y.z"; fail=1; fi
-  if ! jq -r .input "$m" | grep -Eq '^(text|bytes|json|sqlite)$'; then echo "FAIL $id: input must be text|bytes|json|sqlite"; fail=1; fi
+  if ! jq -r .input "$m" | grep -Eq '^(text|bytes|json|plist|sqlite)$'; then echo "FAIL $id: input must be text|bytes|json|plist|sqlite"; fail=1; fi
   entry=$(jq -r '.entry // "index.html"' "$m")
   if [ ! -f "$dir/$entry" ]; then echo "FAIL $id: entry \"$entry\" does not exist"; fail=1; fi
   if jq -r '.matches.extensions // [] | .[]' "$m" | grep -Eqv '^[a-z0-9]+$'; then echo "FAIL $id: extensions must be lowercase, no dot"; fail=1; fi
