@@ -23,6 +23,15 @@ brew install --cask spacebar
 
 If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
+## Update
+
+```
+brew update
+brew upgrade --cask spacebar
+```
+
+(the app opens once after the upgrade; that launch installs the new bundled plugins)
+
 ## Uninstall
 
 ```
