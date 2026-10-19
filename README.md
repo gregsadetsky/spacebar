@@ -21,6 +21,14 @@ brew tap gregsadetsky/tap && brew install --cask spacebar
 
 If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
+## Uninstall
+
+```
+brew uninstall --zap --cask spacebar
+```
+
+or by hand: delete `~/Applications/Spacebar.app` and `~/Library/Containers/io.spacebar.app.QuickLook` (that folder holds the installed plugins). From a clone of this repo, `make uninstall` does both.
+
 ## Notes
 
 - a plugin is a folder with: plugin.json, index.html, your js - see [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)

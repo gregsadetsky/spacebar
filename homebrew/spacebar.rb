@@ -11,6 +11,11 @@ cask "spacebar" do
 
   app "Spacebar.app"
 
+  zap trash: [
+    "~/Library/Containers/io.spacebar.app.QuickLook",
+    "~/Library/Containers/io.spacebar.app",
+  ]
+
   postflight do
     system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{appdir}/Spacebar.app"]
     system_command "/usr/bin/open", args: ["-a", "#{appdir}/Spacebar.app"]
