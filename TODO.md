@@ -159,11 +159,14 @@ ableton sets.
    input. show cue number, start → end, text; maybe total duration and cue
    count at the top. both utis exist on macos? check with spacebar-cli
    match; claim them in a host release if needed.
-6. **tsv** (csv is covered by macos already): real columns, sortable like
-   the sqlite viewer. vendor papaparse (handles tsv/csv, quoting, and
-   delimiter detection) or hand-roll a tab splitter. apple previews tsv as
-   plain text; whether a third party can take
-   `public.tab-separated-values-text` is the same test as plist.
+6. **tsv**: finder shows nothing useful for .tsv today (checked 2026-10-19),
+   so this is a clear win: real columns, sortable like the sqlite viewer,
+   `public.tab-separated-values-text` to claim. vendor papaparse or
+   hand-roll a tab splitter. **csv**: finder does preview it (as plain
+   text, not great). plist proved apple yields to a third-party extension
+   on 15.7, so a csv plugin with real columns is probably possible too;
+   same plugin, second uti (`public.comma-separated-values-text`), test
+   first.
 7. **stl** (1074, apple already previews 3d), **step/dxf**: skip for now.
 8. **.env / .lock / .log**: text with light highlighting; cheap, but
    .env is a dotfile with no extension in finder's eyes (uti lookup by
