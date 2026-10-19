@@ -1,0 +1,13 @@
+{
+  "id": "geojson",
+  "name": "GeoJSON",
+  "version": "0.1.0",
+  "matches": {
+    "extensions": ["geojson"],
+    "utis": ["public.geojson"]
+  },
+  "input": "text",
+  "maxFileSize": 52428800,
+  "entry": "index.html",
+  "requiresHost": "0.1.0"
+}
