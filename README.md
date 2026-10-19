@@ -29,7 +29,6 @@ Shipped with the app:
 
 - `.geojson`: map of the features, hover for properties
 - `.sqlite3` `.sqlite` `.db`: tables, rows, schema
-- `.plist`: the property list as a tree, binary or xml
 
 In the next release (or a local build):
 
