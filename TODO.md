@@ -226,3 +226,33 @@ by `samples/make_documents.py`; limits are documented in PLUGINS.md.
 - hot reload in the dev harness: vite's dev server would need network
   (blocked by design); instead watch the plugin folder and reload the
   webview on change, which works with `vite build --watch`.
+
+## from the plugin writer (archive, epub, markdown, subtitles round)
+
+- a plugin can only add a file type the host already registers with macos;
+  anything else is a host change + release. the biggest limitation of
+  "just write html/js". no fix short of a host release per new type, but
+  the host could ship a much broader type list up front (see the survey),
+  and the app could show "this type needs a host update" instead of nothing.
+- which uti macos assigns to an extension depends on installed apps (srt
+  resolved to MacWhisper's identifier on this mac). `spacebar-cli match`
+  shows it; the matcher falls back to the extension, which is why those
+  previews still work. document this in PLUGINS.md as a known wrinkle.
+- native parsing (archive, epub, plist, sqlite) means host code per
+  format. fine for bundled plugins, impossible for third-party ones. a
+  middle ground: a few generic native inputs (`gzip`, `zip-entries`,
+  `head` for the first N bytes, `xml`) that many plugins could build on.
+- no incremental api: the host hands over one payload and that's it, so
+  every plugin hardcodes limits (archive entries, epub chapters, cues).
+  `spacebar.request(kind, params)` over the message handler (more rows,
+  next chapter, entry N of the archive) is the stretch item from the brief
+  and would fix sqlite paging too.
+- "am i seeing the latest plugin?": source folder vs bundled copy in the
+  app vs installed copy in the extension's container, and a leftover user
+  folder with the same id silently wins over bundled updates. the dev
+  harness and the plugins tab should show which copy is loaded and from
+  where, and `make install` should warn when a user plugin shadows a
+  bundled id.
+- `tools/notebook/` builds five plugins (notebook, markdown, archive, epub,
+  subtitles) from shared code; the folder name is historical. rename to
+  `tools/plugins-build/` or similar and say so in PLUGINS.md.
