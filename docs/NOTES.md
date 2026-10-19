@@ -1,6 +1,6 @@
 # notes
 
-running log of surprises and deviations from SPACEBAR_PLAN.md. newest first.
+running log of macos surprises and deviations from the original brief. newest first.
 
 ## 2026-10-18 no xcode on this machine, build with swiftc
 

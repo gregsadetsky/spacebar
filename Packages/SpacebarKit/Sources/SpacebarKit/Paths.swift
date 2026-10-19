@@ -6,7 +6,7 @@ import Foundation
 /// not sandboxed, so it writes straight into that container; the extension
 /// reads its own home. measured on macos 15.7: a first read from an app group
 /// container costs 1.0 to 1.5 s in every fresh extension process, a read from
-/// the extension's own container costs 0 ms. see NOTES.md.
+/// the extension's own container costs 0 ms. see docs/NOTES.md.
 ///
 /// `strategy` is the one-line switch back to an app group container.
 public enum Paths {
