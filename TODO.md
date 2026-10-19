@@ -8,6 +8,12 @@
   options: a `make bump VERSION=` that tags + updates the cask; the app
   checking github releases and offering the update; or shipping plugins
   separately from the app so they update on their own.
+- app self-update: Sparkle (what non app store mac apps use). needs an
+  appcast xml served somewhere (github pages or the web/ site), the zip
+  signed with sparkle's EdDSA key, and the app bundling the framework. works
+  with an ad-hoc signed app but pairs naturally with the developer id step.
+  brew users would keep getting updates through brew; sparkle covers the
+  people who downloaded the zip.
 - status tab says "press space on a .geojson or .sqlite3 file": hardcoded.
   it should list what is actually previewable right now, computed from the
   enabled plugins' extensions (cap at 5 to 10, then "…"). check how it reads
@@ -63,3 +69,25 @@
   parquet, arrow/feather, ipynb (render cells + outputs), toml, kml, mbtiles
   / pmtiles (map), har, jsonl, wasm (exports/imports), npy/npz, h5, fit/tcx
   (track on the map, reusing the geojson renderer).
+
+## plugin distribution (the obsidian model)
+
+- install a plugin from github: user pastes `owner/repo` (or picks from the
+  list below); the app reads the repo's latest github release, downloads
+  the asset zip (or the tag tarball), validates plugin.json, installs it as
+  a user plugin, remembers the repo + version. "check for plugin updates"
+  compares against the latest tag; auto-update optional per plugin.
+- a plugin registry / marketplace: obsidian keeps a single json file
+  (community-plugins.json) in a central repo; plugin authors open a pull
+  request that adds one entry (id, name, author, description, repo), a
+  maintainer reviews and merges, the app fetches that json to show the
+  list. the plugin's own repo publishes github releases whose assets are
+  the plugin files. same shape would work here: a `plugins.json` in this
+  repo or in a spacebar-plugins repo, pr to add yourself, the app lists it.
+- thumbnails: a marketplace thing, but the plugin can declare it in its
+  manifest (`"screenshot": "screenshot.png"`, `"icon": "icon.png"`, both
+  relative, both optional). the registry entry could also carry a url so
+  the list renders without downloading the plugin. decide which when the
+  marketplace exists.
+- sandbox note: the app (not the extension) does all downloading, so no
+  entitlement changes. plugins stay offline at runtime either way.
