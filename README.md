@@ -1,33 +1,32 @@
-# spacebar
+# Spacebar
 
-quick look previews from plugins. a plugin is a folder of html/js; press
-space on a file in finder, the plugin renders it. ships with geojson and
-sqlite.
+Spacebar lets you preview lots of different kinds of files in the macOS Finder, like .sqlite3 and .geojson
 
-## install
+It also lets developers write plugins to support more kinds of files - just by writing html and javascript!
+
+![Quick Look in Finder showing a GeoJSON map, then a SQLite database](web/preview.gif)
+
+## Install
 
 ```
 brew tap gregsadetsky/tap && brew install --cask spacebar
 ```
 
-the app is not signed with an apple developer id, so macos will refuse to
-open it once. then: system settings → privacy & security → open anyway.
-or `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`.
+<sub>Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).</sub>
 
-if previews don't appear: system settings → general → login items &
-extensions → quick look → spacebar.
+<sub>For now, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway</sub>
 
-## plugins
+<sub>... or, run `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`</sub>
 
-```
-scripts/new-plugin.sh myformat ext   # a working plugin folder
-make install                          # it's live, press space
-```
+If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
-[PLUGINS.md](PLUGINS.md) has the contract. file types are fixed at build
-time (`Extension/Info.plist`); new ones need a release.
+## Notes
 
-## build
+- a plugin is a folder with: plugin.json, index.html, your js
+- Spacebar ships with .geojson and .sqlite3 out of the box
+- to write your own plugin, run `scripts/new-plugin.sh`
+
+## Source Code
 
 command line tools or xcode. `make install`, `make test`, `make smoke`,
 `make release`. [NOTES.md](NOTES.md) is the list of macos surprises.
