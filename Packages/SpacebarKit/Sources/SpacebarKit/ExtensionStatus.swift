@@ -10,20 +10,28 @@ public enum ExtensionStatus: Equatable, Sendable {
     public var label: String {
         switch self {
         case .enabled: return "Registered and enabled"
-        case .disabled: return "Registered but disabled"
+        case .disabled: return "Registered but switched off"
         case .notRegistered: return "Not registered"
         case .unknown(let m): return "Unknown (\(m))"
         }
     }
 
-    /// parses `pluginkit -m -i <id>` output: "+" enabled, "-" disabled, "!" / "?" other, empty = not registered
+    /// parses `pluginkit -m -i <id>` output. each line starts with an election
+    /// tag: "+" the user switched it on, "-" switched off, "!" on for debugging,
+    /// "=" superseded by another copy, "?" unknown. no tag at all (the line
+    /// starts with spaces) means no election yet, which on macos 15 runs the
+    /// extension just fine, so it counts as enabled. empty = not registered.
     public static func parse(_ output: String) -> ExtensionStatus {
-        let line = output.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.first { !$0.isEmpty } ?? ""
-        if line.isEmpty || line.hasPrefix("(no matches)") { return .notRegistered }
-        switch line.first {
-        case "+": return .enabled
+        guard let raw = output.split(separator: "\n").first(where: { !$0.trimmingCharacters(in: .whitespaces).isEmpty }) else { return .notRegistered }
+        let line = String(raw)
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        if trimmed.hasPrefix("(no matches)") { return .notRegistered }
+        if line.hasPrefix(" ") || line.hasPrefix("\t") { return .enabled }   // no election tag
+        switch trimmed.first {
+        case "+", "!": return .enabled
         case "-": return .disabled
-        default: return .unknown(line)
+        case "=": return .unknown("superseded by another copy of the extension")
+        default: return .unknown(trimmed)
         }
     }
 

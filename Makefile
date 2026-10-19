@@ -8,7 +8,7 @@
 #   make release   -> dist/Spacebar-<version>.zip + sha256
 #   make clean
 
-VERSION      ?= 0.2.2
+VERSION      ?= 0.2.3
 BUILD_NUMBER ?= $(shell git rev-list --count HEAD 2>/dev/null || echo 1)
 CONFIG       ?= debug
 ARCH         ?= $(shell uname -m)

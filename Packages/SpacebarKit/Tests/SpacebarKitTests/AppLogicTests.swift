@@ -7,7 +7,10 @@ final class AppLogicTests: XCTestCase {
         XCTAssertEqual(ExtensionStatus.parse("-    io.spacebar.app.QuickLook(0.1.0)"), .disabled)
         XCTAssertEqual(ExtensionStatus.parse(""), .notRegistered)
         XCTAssertEqual(ExtensionStatus.parse("  (no matches)\n"), .notRegistered)
-        XCTAssertEqual(ExtensionStatus.parse("!    io.spacebar.app.QuickLook"), .unknown("!    io.spacebar.app.QuickLook"))
+        XCTAssertEqual(ExtensionStatus.parse("!    io.spacebar.app.QuickLook"), .enabled, "debugger election still runs")
+        XCTAssertEqual(ExtensionStatus.parse("     io.spacebar.app.QuickLook(0.2.2)\n"), .enabled, "no election yet: pluginkit prints no tag, previews work")
+        XCTAssertEqual(ExtensionStatus.parse("=    io.spacebar.app.QuickLook(0.2.2)"), .unknown("superseded by another copy of the extension"))
+        XCTAssertEqual(ExtensionStatus.parse("?    io.spacebar.app.QuickLook(0.2.2)"), .unknown("?    io.spacebar.app.QuickLook(0.2.2)"))
     }
 
     func testSetEnabledRoundTrip() throws {
