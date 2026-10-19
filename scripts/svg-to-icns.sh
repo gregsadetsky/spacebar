@@ -1,15 +1,17 @@
 #!/bin/bash
-# render an svg (1024x1024 viewBox) into App/icon/AppIcon.icns using quick look's
-# svg renderer. usage: scripts/svg-to-icns.sh App/icon/AppIcon.svg
+# render App/icon/AppIcon.svg (1024x1024 viewBox) into App/icon/AppIcon.icns and
+# web/icon.png, keeping transparency outside the rounded rect.
+# needs librsvg: brew install librsvg
+# usage: scripts/svg-to-icns.sh [App/icon/AppIcon.svg] [App/icon/AppIcon.icns]
 set -euo pipefail
-svg="${1:?svg}"; out="${2:-App/icon/AppIcon.icns}"
+svg="${1:-App/icon/AppIcon.svg}"; out="${2:-App/icon/AppIcon.icns}"
+command -v rsvg-convert >/dev/null || { echo "rsvg-convert missing: brew install librsvg"; exit 1; }
 tmp=$(mktemp -d); set=$tmp/AppIcon.iconset; mkdir -p "$set"
-qlmanage -t -s 1024 -o "$tmp" "$svg" >/dev/null 2>&1
-src="$tmp/$(basename "$svg").png"
-[ -f "$src" ] || { echo "quick look could not render $svg"; exit 1; }
+rsvg-convert -w 1024 -h 1024 --background-color=none "$svg" -o "$tmp/1024.png"
 for px in 16 32 128 256 512; do
-  sips -z $px $px "$src" --out "$set/icon_${px}x${px}.png" >/dev/null
-  d=$((px * 2)); sips -z $d $d "$src" --out "$set/icon_${px}x${px}@2x.png" >/dev/null
+  rsvg-convert -w $px -h $px --background-color=none "$svg" -o "$set/icon_${px}x${px}.png"
+  d=$((px * 2)); rsvg-convert -w $d -h $d --background-color=none "$svg" -o "$set/icon_${px}x${px}@2x.png"
 done
 iconutil -c icns "$set" -o "$out" && echo "wrote $out from $svg"
+rsvg-convert -w 256 -h 256 --background-color=none "$svg" -o web/icon.png && echo "wrote web/icon.png"
 rm -rf "$tmp"
