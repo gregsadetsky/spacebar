@@ -118,6 +118,9 @@ ableton sets.
    copy as JSON. Dates, data, large integers and keyed-archive UIDs are
    normalized for JSON (see PLUGINS.md). Claims the base, XML and binary
    property-list UTIs. Tests and samples cover the formats and error paths.
+   Verified locally through the real Quick Look extension on 2026-10-19:
+   binary, XML, OpenStep and keyed archives rendered in 146–249 ms; malformed
+   XML showed the host error. Apple did not take over these plist previews.
    Reference: [i-just-want-to-see-the-plist](https://github.com/gregsadetsky/i-just-want-to-see-the-plist)
    still lists XML support as TODO; its current parser fixes the old emoji
    issue and also unwraps Shortcuts/archive containers. Container unpacking
