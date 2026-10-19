@@ -14,20 +14,6 @@
   with an ad-hoc signed app but pairs naturally with the developer id step.
   brew users would keep getting updates through brew; sparkle covers the
   people who downloaded the zip.
-- status tab: the "press space on a .geojson or .sqlite3 file" line is the
-  one sentence that says what the app does, and it's rendered as a grey
-  caption under a status row. make it the obvious thing: bigger, first,
-  phrased as what the software does. also: it is hardcoded.
-- status tab buttons: "Open System Settings" and "Refresh" mean nothing
-  when the extension is already on. show them only when it is off, under
-  one sentence ("macOS keeps new Quick Look extensions switched off. Turn
-  Spacebar on in System Settings → General → Login Items & Extensions →
-  Quick Look, then press Refresh"). "Reset Quick Look" keeps its own
-  section but with the explanation above the button: "Seeing a stale
-  preview after changing or installing a plugin? Try the button below."
-  it should list what is actually previewable right now, computed from the
-  enabled plugins' extensions (cap at 5 to 10, then "…"). check how it reads
-  after installing or disabling a plugin.
 - universal (arm64 + x86_64) release zip; intel macs can't open the current one
 - developer id signing + notarization (release.sh only), see readme note
 - sqlite: `spacebar.query(sql)` so sort/paging works on the whole table, not the 50 sampled rows

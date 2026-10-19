@@ -36,6 +36,8 @@ Shipped with the app:
 - `.epub`: cover, author, contents and an excerpt
 - `.srt` `.vtt`: subtitle cues with timestamps
 
+Want to write your own? See [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
+
 ## Update
 
 ```
@@ -52,12 +54,6 @@ brew uninstall --zap --cask spacebar
 ```
 
 or by hand: delete `~/Applications/Spacebar.app` and `~/Library/Containers/io.spacebar.app.QuickLook` (that folder holds the installed plugins). From a clone of this repo, `make uninstall` does both.
-
-## Notes
-
-- a plugin is a folder with: plugin.json, index.html, your js - see [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
-- Spacebar includes GeoJSON, SQLite, property list, Jupyter notebook, Markdown, archive, EPUB and subtitle plugins
-- to write your own plugin, run `scripts/new-plugin.sh`
 
 ## How to develop
 
