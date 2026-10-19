@@ -12,5 +12,6 @@ samples/*.sqlite3
 samples/*.sqlite3-*
 samples/*.db
 samples/*.json
+samples/*.plist
 .swiftpm/
 .claude-logs/

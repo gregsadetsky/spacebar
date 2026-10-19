@@ -113,17 +113,15 @@ ableton sets.
 
 ### next plugins, in order
 
-1. **plist, binary and xml** (gregsadetsky/i-just-want-to-see-the-plist is
-   the spec: show it as a tree/json, never write anything, all local).
-   host side: add an input kind `plist` where SpacebarKit parses with
-   PropertyListSerialization (handles binary, xml and openstep in one call)
-   and hands the plugin a json object; dates → iso strings, data → `{"data":
-   <base64>, "bytes": n}`. plugin side: collapsible tree + "copy as json".
-   claim `com.apple.property-list` in Extension/Info.plist. RISK: the brief
-   lists plist among the types apple reserves for its own preview; test
-   first with a quick `hello` plugin on a .plist and read the log. if apple
-   wins, the plugin is still useful in the app's dev harness and the
-   browser harness, and the fallback is a `.bplist`/`.plist.json` dance.
+1. **plist: implemented for host 0.2.0, release + cask bump pending.**
+   Native binary/XML/OpenStep input, lazy collapsible tree, JSON view and
+   copy as JSON. Dates, data, large integers and keyed-archive UIDs are
+   normalized for JSON (see PLUGINS.md). Claims the base, XML and binary
+   property-list UTIs. Tests and samples cover the formats and error paths.
+   Reference: [i-just-want-to-see-the-plist](https://github.com/gregsadetsky/i-just-want-to-see-the-plist)
+   still lists XML support as TODO; its current parser fixes the old emoji
+   issue and also unwraps Shortcuts/archive containers. Container unpacking
+   is outside this first plist plugin's scope.
 2. **ipynb**: json input, render markdown cells (small vendored md
    renderer or a minimal one), code cells with the language from metadata,
    outputs (text, html, png/jpeg base64 images, error tracebacks). cap long
@@ -167,5 +165,5 @@ ableton sets.
 
 a fresh agent doing one of these: read PLUGINS.md, then
 `scripts/new-plugin.sh <id> <ext>`, and check whether the uti is already
-in Extension/Info.plist (plist and csv are not; they need the host change
-above plus an entry there).
+in Extension/Info.plist (plist is now claimed; csv, tsv and Ableton still
+need host changes and a release before Homebrew users can preview them).

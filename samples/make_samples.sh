@@ -1,11 +1,30 @@
 #!/bin/bash
-# generates samples/*.geojson and samples/*.sqlite3. deterministic, no downloads.
+# generates GeoJSON, SQLite and plist samples. deterministic, no downloads.
 # HUGE=1 also writes huge.sqlite3 (~200 MB) to test the size cap.
 set -euo pipefail
 cd "$(dirname "$0")"
 
 python3 -I - <<'PY'
-import json, random
+import json, random, plistlib, datetime
+
+plist = {
+  "Application": "Spacebar", "Enabled": True, "LaunchCount": 42,
+  "Greeting": "Hello 世界 🌟 👩🏽‍💻", "Scale": 1.25,
+  "LastOpened": datetime.datetime(2026, 10, 19, 12, 30),
+  "Bookmark": bytes([0, 255, 10, 42]),
+  "Preferences": {"Theme": "system", "Favorites": ["Documents", "Downloads"], "Empty": {}},
+  "LiteralText": "<script>This is text, not HTML.</script>",
+  "LargeInteger": 2**63 - 1,
+}
+for name, fmt in [("preferences-xml.plist", plistlib.FMT_XML), ("preferences-binary.plist", plistlib.FMT_BINARY)]:
+  with open(name, "wb") as f: plistlib.dump(plist, f, fmt=fmt)
+with open("archive.plist", "wb") as f:
+  plistlib.dump({"$archiver": "NSKeyedArchiver", "$version": 100000,
+    "$objects": ["$null", {"name": "Example"}], "$top": {"root": plistlib.UID(1)}}, f, fmt=plistlib.FMT_BINARY)
+with open("preferences-openstep.plist", "w") as f:
+  f.write('{ Name = "Legacy preferences"; Favorites = (Documents, Downloads); Data = <00ff0a>; }\n')
+with open("invalid.plist", "w") as f: f.write("<plist><dict><key>unfinished</key>")
+print("plist: preferences-xml, preferences-binary, preferences-openstep, archive, invalid")
 
 cities = [
   ("Tokyo","JP",37400068,139.69,35.69),("Delhi","IN",28514000,77.21,28.61),("Shanghai","CN",25582000,121.47,31.23),
@@ -88,4 +107,10 @@ fi
 # payload dump for the browser harness, when the cli has been built
 CLI="../Packages/SpacebarKit/.build/debug/spacebar-cli"
 if [ -x "$CLI" ]; then "$CLI" dump library.sqlite3 > library.sqlite3.json && echo "harness: library.sqlite3.json"; fi
-ls -la *.geojson *.sqlite3* *.db
+if [ -x "$CLI" ]; then
+  for file in preferences-xml.plist preferences-binary.plist preferences-openstep.plist archive.plist; do
+    "$CLI" dump "$file" plist > "$file.json"
+  done
+  echo "harness: plist JSON dumps"
+fi
+ls -la *.geojson *.sqlite3* *.db *.plist

@@ -1,20 +1,27 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <style>
-    :root { --fg: #1d1d1f; --bg: #fff; --muted: #6e6e73; }
-    @media (prefers-color-scheme: dark) { :root { --fg: #f2f2f2; --bg: #1e1e1e; --muted: #9a9a9e; } }
-    body { margin: 0; padding: 16px; font: 13px/1.5 -apple-system, sans-serif; color: var(--fg); background: var(--bg); }
-    h1 { font-size: 15px; margin: 0 0 8px; }
-    pre { white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace, Menlo, monospace; }
-    .muted { color: var(--muted); }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property List</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1 id="title"></h1>
-  <p class="muted" id="meta"></p>
-  <pre id="out"></pre>
+  <header>
+    <div class="file"><h1 id="title"></h1><span id="meta"></span></div>
+    <div class="controls">
+      <div class="switch" aria-label="View">
+        <button id="tree-button" aria-pressed="true">Tree</button>
+        <button id="json-button" aria-pressed="false">JSON</button>
+      </div>
+      <button id="copy">Copy as JSON</button>
+    </div>
+  </header>
+  <main>
+    <div id="tree" aria-label="Property list"></div>
+    <textarea id="json" aria-label="Property list as JSON" readonly spellcheck="false" hidden></textarea>
+  </main>
+  <footer><span>Property List</span><span id="status" role="status" aria-live="polite"></span></footer>
   <script src="index.js"></script>
 </body>
 </html>

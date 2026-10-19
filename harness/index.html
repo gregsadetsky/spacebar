@@ -3,7 +3,7 @@
   browser-only dev harness: write a plugin with no xcode, no app.
     cd spacebar && python3 -m http.server 8000
     open http://localhost:8000/harness/?plugin=geojson&sample=cities.geojson
-  the plugin loads in an iframe with a fake window.spacebar. for input=sqlite,
+  the plugin loads in an iframe with a fake window.spacebar. for input=sqlite or plist,
   the harness fetches <sample>.json (make samples writes samples/library.sqlite3.json
   with the real host-side summary via spacebar-cli dump).
 -->
@@ -67,9 +67,11 @@
       var sampleURL = "../samples/" + sample;
       var data, size;
       try {
-        if (manifest.input === "sqlite") {
-          data = await (await fetch(sampleURL + ".json")).json();
-          size = data.fileSize;
+        if (manifest.input === "sqlite" || manifest.input === "plist") {
+          var dump = await fetch(sampleURL + ".json");
+          if (!dump.ok) throw new Error(dump.status);
+          data = await dump.json();
+          size = manifest.input === "sqlite" ? data.fileSize : (await (await fetch(sampleURL)).arrayBuffer()).byteLength;
         } else {
           var r = await fetch(sampleURL);
           if (!r.ok) throw new Error(r.status);
@@ -77,7 +79,7 @@
           else if (manifest.input === "json") { data = await r.json(); size = 0; }
           else { var buf = await r.arrayBuffer(); size = buf.byteLength; data = btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
         }
-      } catch (e) { return setStatus("cannot load sample " + sampleURL + " (" + e.message + ")" + (manifest.input === "sqlite" ? " — run make samples to write the .json dump" : ""), "bad"); }
+      } catch (e) { return setStatus("cannot load sample " + sampleURL + " (" + e.message + ")" + (["sqlite", "plist"].includes(manifest.input) ? " — run make samples to write the .json dump" : ""), "bad"); }
 
       var theme = form.theme.value || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
       var frame = document.getElementById("frame");

@@ -30,6 +30,11 @@ Shipped with the app:
 - `.geojson`: map of the features, hover for properties
 - `.sqlite3` `.sqlite` `.db`: tables, rows, schema
 
+In the next release (or a local build):
+
+- `.plist`: binary, XML and OpenStep property lists, with a collapsible tree,
+  JSON view and copy as JSON. All local; the original file is never modified.
+
 ## Update
 
 ```
@@ -50,7 +55,7 @@ or by hand: delete `~/Applications/Spacebar.app` and `~/Library/Containers/io.sp
 ## Notes
 
 - a plugin is a folder with: plugin.json, index.html, your js - see [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
-- Spacebar ships with .geojson and .sqlite3 out of the box
+- Spacebar includes GeoJSON, SQLite and property list plugins
 - to write your own plugin, run `scripts/new-plugin.sh`
 
 ## How to develop
@@ -58,5 +63,11 @@ or by hand: delete `~/Applications/Spacebar.app` and `~/Library/Containers/io.sp
 (you don't need to do this to write plugins)
 
 `make install`, `make test`, `make smoke`, `make release`
+
+Before `make install`, remove any Homebrew copy with
+`brew uninstall --cask spacebar`. The local build goes in `~/Applications`;
+leaving the brew copy in `/Applications` makes the two Quick Look extensions
+compete. Homebrew users get new host capabilities and bundled plugins only
+after a release and cask update.
 
 MIT

@@ -14,7 +14,7 @@ struct StatusView: View {
                     }
                 }
                 if model.status == .enabled {
-                    Text("Press space on a .geojson or .sqlite3 file in Finder.")
+                    Text("Press space on a .plist, .geojson or .sqlite3 file in Finder.")
                         .font(.callout).foregroundStyle(.secondary)
                 } else {
                     Text("macOS keeps third-party Quick Look extensions off until you turn them on once: System Settings → General → Login Items & Extensions → Quick Look → Spacebar.")

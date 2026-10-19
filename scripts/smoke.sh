@@ -55,6 +55,11 @@ expect samples/invalid.geojson 'plugin=geojson .* outcome=failed: Not valid GeoJ
 expect samples/library.sqlite3 'plugin=sqlite .* outcome=done'
 expect samples/wal.sqlite3     'plugin=sqlite .* outcome=done'
 expect samples/notadb.sqlite3  'plugin=sqlite .* outcome=host error: not a SQLite database'
+expect samples/preferences-xml.plist 'plugin=plist .* outcome=done'
+expect samples/preferences-binary.plist 'plugin=plist .* outcome=done'
+expect samples/preferences-openstep.plist 'plugin=plist .* outcome=done'
+expect samples/archive.plist 'plugin=plist .* outcome=done'
+expect samples/invalid.plist 'plugin=plist .* outcome=host error: could not preview property list'
 expect samples/notadb.db       'plugin=sqlite ext=db .* outcome=host error: not a SQLite database'
 
 echo "== matcher via cli"

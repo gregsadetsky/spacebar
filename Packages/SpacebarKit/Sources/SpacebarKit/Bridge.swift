@@ -14,7 +14,8 @@ public enum Bridge {
         case .text(let s): data = try jsLiteral(s)
         case .bytes(let d): data = try jsLiteral(d.base64EncodedString())
         case .json(let obj): data = try jsLiteral(obj)
-        case .plist(let obj): data = try jsLiteral(obj)
+        // JSON.parse preserves literal dictionary keys such as __proto__.
+        case .plist(let obj): data = "JSON.parse(\(try jsLiteral(jsLiteral(obj))))"
         case .sqlite(let obj): data = try jsLiteral(obj)
         }
         return """

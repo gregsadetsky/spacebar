@@ -78,7 +78,7 @@ plugins folder ("open plugins folder" in the app). folder name = `id`.
 - `matches.extensions`: lowercase, no dot. `matches.utis` optional.
   an exact uti match beats an extension match; within a tier the enabled
   plugin with the highest `priority` wins, ties go alphabetically by id
-- `input`: `text` | `bytes` | `json` | `sqlite`, see below
+- `input`: `text` | `bytes` | `json` | `plist` | `sqlite`, see below
 - `maxFileSize`: bytes, default 50 MB. bigger files get an error view,
   the plugin never runs
 - `entry`: default `index.html`
@@ -117,6 +117,22 @@ payload shapes by `input`:
 - `text`: the file as a string (utf-8, invalid bytes become U+FFFD)
 - `bytes`: base64 string. keep `maxFileSize` small
 - `json`: parsed object (parse errors become a host error view)
+- `plist` (host 0.2.0+): the root value parsed natively from a binary, XML or
+  OpenStep property list. Dictionaries, arrays, strings, booleans and numbers
+  keep their shape; root scalars and empty containers work too. JSON conversions:
+  - dates → UTC ISO 8601 strings with milliseconds
+  - data → `{"data": "<base64>", "bytes": n}`
+  - integers outside JavaScript's safe range (±9,007,199,254,740,991) → decimal
+    strings, preserving every digit
+  - non-finite reals → `"NaN"`, `"Infinity"`, `"-Infinity"`
+  - keyed-archive UID references → `{"CF$UID": n}`; archived objects are never
+    instantiated or unarchived
+
+  This is a JSON representation, not a lossless plist round trip (for example,
+  dates become strings). No archive/Shortcuts container unpacking is performed.
+  Malformed plists get a host error. In addition to `maxFileSize`, conversion is
+  capped at 128 nesting levels, 100,000 values and 32 MB of expanded strings/data.
+  The bundled viewer caps input at 10 MB and pages large branches in the tree.
 - `sqlite`: the host opens the db read-only and hands you:
 
 ```json
@@ -164,14 +180,20 @@ python3 -m http.server 8000
 open "http://localhost:8000/harness/?plugin=geojson&sample=cities.geojson"
 ```
 
-for `sqlite` plugins the harness loads `samples/<file>.json`, written by
-`make samples` with the real host-side summary. to dump any db yourself
+for `sqlite` and `plist` plugins the harness loads `samples/<file>.json`, written by
+`make samples` with the real host-side payload. to dump a file yourself
 (`make cli` builds the tool first):
 
 ```
 make cli
 Packages/SpacebarKit/.build/debug/spacebar-cli dump my.sqlite3 > my.sqlite3.json
+Packages/SpacebarKit/.build/debug/spacebar-cli dump preferences.plist > preferences.plist.json
 ```
+
+Try the property list viewer with
+`http://localhost:8000/harness/?plugin=plist&sample=preferences-binary.plist`.
+`make samples` also generates XML, OpenStep and keyed-archive examples, plus
+an invalid plist for the native host's error view.
 
 `scripts/validate-plugins.sh` checks every plugin in `plugins/` (manifest
 keys, entry exists, no http urls in code).

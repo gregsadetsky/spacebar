@@ -1,9 +1,13 @@
 {
   "id": "plist",
-  "name": "plist",
+  "name": "Property List",
   "version": "0.1.0",
-  "matches": { "extensions": ["plist"] },
+  "matches": {
+    "extensions": ["plist"],
+    "utis": ["com.apple.property-list", "com.apple.xml-property-list", "com.apple.binary-property-list"]
+  },
   "input": "plist",
   "maxFileSize": 10485760,
-  "entry": "index.html"
+  "entry": "index.html",
+  "requiresHost": "0.2.0"
 }
