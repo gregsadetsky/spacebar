@@ -16,6 +16,7 @@ bad() { echo "FAIL $1"; fail=1; }
 make build >/dev/null || { echo "build failed"; exit 1; }
 make install >/dev/null || { echo "install failed"; exit 1; }
 make samples >/dev/null || { echo "samples failed"; exit 1; }
+[ -x "$CLI" ] || { echo "missing $CLI (make cli)"; exit 1; }
 sleep 2
 
 # the probe: outranks geojson for public.geojson files while installed
@@ -58,7 +59,8 @@ expect samples/notadb.sqlite3  'plugin=sqlite .* outcome=host error: not a SQLit
 echo "== matcher via cli"
 if $CLI match samples/cities.geojson | grep -q "^geojson"; then pass "cli match geojson"; else bad "cli match geojson"; fi
 if $CLI match samples/library.sqlite3 | grep -q "^sqlite"; then pass "cli match sqlite"; else bad "cli match sqlite"; fi
-if $CLI match Makefile >/dev/null 2>&1; then bad "cli match Makefile should find nothing"; else pass "cli match Makefile: no plugin"; fi
+out=$($CLI match Makefile 2>&1); st=$?
+if [ $st -eq 1 ] && echo "$out" | grep -q "^no plugin"; then pass "cli match Makefile: no plugin"; else bad "cli match Makefile: status $st, '$out'"; fi
 
 if [ $fail = 0 ]; then echo "smoke: all good"; exit 0; fi
 if [ "$BLOCKING" = "1" ]; then echo "smoke: failures"; exit 1; fi

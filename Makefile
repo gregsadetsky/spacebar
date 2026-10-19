@@ -41,7 +41,7 @@ endif
 
 SWIFTC := swiftc -sdk $(SDK) -target $(TARGET) $(OPT) -parse-as-library -swift-version 5
 
-.PHONY: all build kit test samples samples-huge install uninstall smoke release clean gen
+.PHONY: all build kit cli test samples samples-huge install uninstall smoke release clean
 
 all: build
 
@@ -96,7 +96,12 @@ test:
 	fi
 	scripts/validate-plugins.sh
 
-samples:
+# spacebar-cli dump/match: used by make samples (harness payload) and smoke
+cli:
+	cd Packages/SpacebarKit && swift build --product spacebar-cli 2>&1 | grep -E "error|warning: unre" || true
+	@test -x Packages/SpacebarKit/.build/debug/spacebar-cli || { echo "spacebar-cli did not build"; exit 1; }
+
+samples: cli
 	samples/make_samples.sh
 
 samples-huge:
