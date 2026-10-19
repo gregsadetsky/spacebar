@@ -96,16 +96,7 @@ samples-huge:
 	HUGE=1 samples/make_samples.sh
 
 install: build
-	@mkdir -p $(INSTALL_DIR)
-	rm -rf "$(INSTALL_DIR)/$(APP_NAME).app"
-	cp -R $(APP) "$(INSTALL_DIR)/$(APP_NAME).app"
-	/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$(INSTALL_DIR)/$(APP_NAME).app"
-	pluginkit -a "$(INSTALL_DIR)/$(APP_NAME).app/Contents/PlugIns/$(EXT_NAME).appex" || true
-	pluginkit -e use -i $(EXT_ID) || echo "could not enable via pluginkit; enable in System Settings > General > Login Items & Extensions > Quick Look"
-	open "$(INSTALL_DIR)/$(APP_NAME).app"
-	qlmanage -r >/dev/null 2>&1 || true
-	qlmanage -r cache >/dev/null 2>&1 || true
-	@echo "installed to $(INSTALL_DIR)/$(APP_NAME).app"
+	INSTALL_DIR="$(INSTALL_DIR)" scripts/install.sh $(APP)
 
 uninstall:
 	pluginkit -r "$(INSTALL_DIR)/$(APP_NAME).app/Contents/PlugIns/$(EXT_NAME).appex" 2>/dev/null || true

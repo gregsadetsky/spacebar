@@ -6,9 +6,5 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
-	<key>com.apple.security.application-groups</key>
-	<array>
-		<string>group.io.spacebar</string>
-	</array>
 </dict>
 </plist>
