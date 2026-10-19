@@ -1,13 +1,13 @@
 # lives in a separate homebrew-tap repo when published:
-#   brew tap <you>/tap && brew install --cask spacebar
+#   brew tap gregsadetsky/tap && brew install --cask spacebar
 cask "spacebar" do
   version "0.1.0"
   sha256 "REPLACE_WITH_dist/Spacebar-0.1.0.zip.sha256"
 
-  url "https://github.com/<you>/spacebar/releases/download/v#{version}/Spacebar-#{version}.zip"
+  url "https://github.com/gregsadetsky/spacebar/releases/download/v#{version}/Spacebar-#{version}.zip"
   name "Spacebar"
   desc "Plugin-based Quick Look previews (GeoJSON, SQLite, …)"
-  homepage "https://github.com/<you>/spacebar"
+  homepage "https://github.com/gregsadetsky/spacebar"
 
   app "Spacebar.app"
 

@@ -1,5 +1,29 @@
 # writing a plugin
 
+## the short loop
+
+```
+scripts/new-plugin.sh toml toml        # plugins/toml/ with a working plugin.json + index.html + index.js
+make build                              # or make install
+build/Spacebar.app/Contents/MacOS/Spacebar --dev some.toml --plugin toml --snapshot out.png
+```
+
+edit `plugins/toml/index.js`, rerun. or open the app, window → dev harness
+(⇧⌘D), pick the plugin and a file, ⌘R reloads, the console on the right
+shows `spacebar.log()` and `console.log()` output and the outcome
+(done / fail / timed out). `make install` copies bundled plugins into place;
+after that, space in finder uses the new code (no restart needed).
+
+no mac tooling at all: `make samples && python3 -m http.server 8000`, then
+`http://localhost:8000/harness/?plugin=toml&sample=some.toml` runs the plugin
+in an iframe with a fake `window.spacebar`.
+
+`make test` validates every plugin folder (manifest keys, entry exists, no
+http urls in code). `make smoke` runs the bundled samples through the real
+quick look extension.
+
+## the folder
+
 a plugin is a folder:
 
 ```

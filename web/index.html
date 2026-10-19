@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spacebar</title>
+  <meta name="description" content="Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it. Ships with GeoJSON and SQLite.">
+  <meta property="og:title" content="Spacebar">
+  <meta property="og:description" content="Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it. Ships with GeoJSON and SQLite.">
+  <meta property="og:image" content="https://spacebar.greg.technology/og.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    body { max-width: 760px; margin: 40px auto; padding: 0 16px; font: 16px/1.5 -apple-system, system-ui, sans-serif; }
+    img { max-width: 100%; border: 1px solid #ccc; }
+    code, pre { font: 14px/1.5 ui-monospace, Menlo, monospace; }
+    pre { background: #f4f4f4; padding: 10px; overflow: auto; }
+    @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img { border-color: #444; } }
+  </style>
+</head>
+<body>
+  <h1>Spacebar</h1>
+  <p>Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it.</p>
+  <img src="preview.gif" alt="Quick Look panel showing a GeoJSON map, then a SQLite table browser" width="820">
+  <ul>
+    <li>A plugin is a folder: <code>plugin.json</code>, <code>index.html</code>, your JS. No build step.</li>
+    <li>The host hands the plugin the file (text, bytes, JSON, or a native SQLite summary) and shows the result.</li>
+    <li>Ships with <code>geojson</code> (map, zero dependencies) and <code>sqlite</code> (tables, rows, schema).</li>
+    <li>Offline by design: no network, no filesystem, sandboxed.</li>
+    <li>Dev harness in the app and in the browser. <code>scripts/new-plugin.sh</code> gives you a working plugin to edit.</li>
+  </ul>
+  <h2>Install</h2>
+  <pre>brew tap gregsadetsky/tap &amp;&amp; brew install --cask spacebar</pre>
+  <p>Not signed with an Apple developer id yet: macOS refuses it once. System Settings → Privacy &amp; Security → Open Anyway, or <code>xattr -dr com.apple.quarantine ~/Applications/Spacebar.app</code>. Then, if previews don't show: System Settings → General → Login Items &amp; Extensions → Quick Look → Spacebar.</p>
+  <h2>Source</h2>
+  <p><a href="https://github.com/gregsadetsky/spacebar">github.com/gregsadetsky/spacebar</a>, MIT. Plugin contract in <a href="https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md">PLUGINS.md</a>.</p>
+</body>
+</html>
