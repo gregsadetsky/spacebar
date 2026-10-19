@@ -48,7 +48,7 @@ all: build
 
 # --- SpacebarKit as a static library both executables link against -----------
 $(KIT_LIB): $(KIT_SRC) $(ARCHIVE_HEADERS)
-	@mkdir -p $(KIT_DIR)
+	@mkdir -p $(KIT_DIR) && touch $(BUILD)/.metadata_never_index  # spotlight must not index the dev build, or pluginkit registers it
 	$(SWIFTC) -module-name SpacebarKit -emit-library -static -emit-module \
 		-emit-module-path $(KIT_DIR)/SpacebarKit.swiftmodule \
 		$(KIT_SRC) -o $(KIT_LIB)
