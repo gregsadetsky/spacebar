@@ -1,0 +1,10 @@
+{
+  "id": "notebook",
+  "name": "Jupyter Notebook",
+  "version": "0.1.0",
+  "matches": { "extensions": ["ipynb"], "utis": ["io.spacebar.ipynb"] },
+  "input": "json",
+  "maxFileSize": 20971520,
+  "entry": "index.html",
+  "requiresHost": "0.1.0"
+}

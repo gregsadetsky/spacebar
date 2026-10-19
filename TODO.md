@@ -46,7 +46,7 @@
   mac (find ~ -type f, group by extension, ignore caches and node_modules),
   and read the issue trackers / supported lists of the open source quick
   look apps (glance, quicklookjs, SourceCodeSyntaxHighlight, QLMarkdown,
-  OnePreview, Parkour) for what people ask for. ipynb first candidate.
+  OnePreview, Parkour) for what people ask for. Plist and ipynb now implemented.
 
 - `.tar.gz` / `.tar` / `.zip`: list the entries (name, size, date) like a
   file browser. the host can do the listing natively with libarchive
@@ -76,7 +76,7 @@
   a host release to claim the extension (`com.ableton.live-set` or
   whatever uti live registers on that mac; check with spacebar-cli match).
 - other candidates already in QLSupportedContentTypes with no plugin yet:
-  parquet, arrow/feather, ipynb (render cells + outputs), toml, kml, mbtiles
+  parquet, arrow/feather, toml, kml, mbtiles
   / pmtiles (map), har, jsonl, wasm (exports/imports), npy/npz, h5, fit/tcx
   (track on the map, reusing the geojson renderer).
 
@@ -128,10 +128,17 @@ ableton sets.
    still lists XML support as TODO; its current parser fixes the old emoji
    issue and also unwraps Shortcuts/archive containers. Container unpacking
    is outside this first plist plugin's scope.
-2. **ipynb**: json input, render markdown cells (small vendored md
-   renderer or a minimal one), code cells with the language from metadata,
-   outputs (text, html, png/jpeg base64 images, error tracebacks). cap long
-   outputs. `io.spacebar.ipynb` is already claimed.
+2. **ipynb: implemented locally, release + cask bump pending.** JSON input,
+   JupyterLab 4.6.4 rendering functions, Markdown, highlighted code, math,
+   saved tables/images/SVG, streams and error tracebacks. Supports notebook
+   formats 3/4, paging, code visibility, output limits and both themes.
+   Sanitized and offline; interactive output needs a saved static fallback.
+   `io.spacebar.ipynb` was already claimed. Build/test instructions and
+   dependency licenses are in tools/notebook/README.md.
+   Verified 2026-10-19 through the real extension: rich, legacy, empty,
+   untrusted and 1,000-cell notebooks finished in 186–1,763 ms; invalid cells
+   showed the expected error. Native WebKit checks covered decoded PNG/SVG
+   and attachments, math/fonts, code visibility, scrolling and paging.
 3. **ableton `.als`**: gzipped xml (see plugin ideas above). the friend
    gift. needs a host release to claim the uti; check what uti live
    registers with `spacebar-cli match set.als` on a mac that has live.

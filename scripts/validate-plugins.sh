@@ -1,7 +1,8 @@
 #!/bin/bash
 # checks every plugins/*/plugin.json: parses, required keys, entry exists,
-# extensions lowercase without dots, no http(s):// strings in html/js/css
-# (plugins are offline; a cdn url is a bug).
+# extensions lowercase without dots, no http(s):// strings in first-party code.
+# Vendored libraries contain inert URL constants; runtime network blocking is
+# enforced by the host. See tools/notebook for bundle tests and provenance.
 set -euo pipefail
 shopt -s nullglob
 cd "$(dirname "$0")/.."
@@ -22,7 +23,7 @@ for dir in plugins/*/; do
   if jq -r '.matches.extensions // [] | .[]' "$m" | grep -Eqv '^[a-z0-9]+$'; then echo "FAIL $id: extensions must be lowercase, no dot"; fail=1; fi
   if [ "$(jq -r '(.matches.extensions // [] | length) + (.matches.utis // [] | length)' "$m")" = "0" ]; then echo "FAIL $id: matches is empty"; fail=1; fi
   # urls in code are a bug (plugins are offline); urls in // or /* comments are fine
-  hits=$(find "$dir" -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) -exec grep -HnE 'https?://' {} + 2>/dev/null \
+  hits=$(find "$dir" -path 'plugins/notebook/vendor' -prune -o -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) -exec grep -HnE 'https?://' {} + 2>/dev/null \
          | grep -vE '^[^:]+:[0-9]+:\s*(//|/\*|\*|<!--)' | grep -vE 'https?://www\.w3\.org/' || true)
   if [ -n "$hits" ]; then
     echo "$hits"; echo "FAIL $id: http(s):// url found in code above (plugins are offline)"; fail=1

@@ -195,5 +195,14 @@ Try the property list viewer with
 `make samples` also generates XML, OpenStep and keyed-archive examples, plus
 an invalid plist for the native host's error view.
 
+Try the notebook viewer with
+`http://localhost:8000/harness/?plugin=notebook&sample=analysis.ipynb`.
+`make samples` generates rich, legacy, empty, invalid, large and untrusted
+notebooks. Its checked-in JupyterLab-based bundle requires no downloads at
+runtime or during a normal app build. To change it, see
+[tools/notebook/README.md](tools/notebook/README.md).
+
 `scripts/validate-plugins.sh` checks every plugin in `plugins/` (manifest
-keys, entry exists, no http urls in code).
+keys, entry exists, no http URLs in first-party code). Notebook vendor code
+contains inert upstream URL constants and is covered by bundle tests and the
+host's runtime network block.

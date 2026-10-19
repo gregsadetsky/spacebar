@@ -53,6 +53,16 @@ final class BridgeTests: XCTestCase {
         XCTAssertEqual(sb.forProperty("data").toString(), Data([0, 255, 10]).base64EncodedString())
     }
 
+    func testJSONPreservesPrototypeNamedKeys() throws {
+        let obj: [String: Any] = ["__proto__": ["inherited": true], "constructor": "literal", "source": "</script>\u{2028}"]
+        let script = try Bridge.script(file: file, manifest: manifest("notebook", input: .json), payload: .json(obj), theme: .light)
+        let (sb, _) = try run(script)
+        XCTAssertTrue(sb.context.evaluateScript("Object.prototype.hasOwnProperty.call(spacebar.data, '__proto__')")!.toBool())
+        XCTAssertTrue(sb.forProperty("data").forProperty("inherited").isUndefined)
+        XCTAssertEqual(sb.forProperty("data").forProperty("constructor").toString(), "literal")
+        XCTAssertEqual(sb.forProperty("data").forProperty("source").toString(), "</script>\u{2028}")
+    }
+
     func testDoneFailLogPostMessages() throws {
         let script = try Bridge.script(file: file, manifest: manifest("t"), payload: .text("x"), theme: .light)
         let (sb, _) = try run(script)

@@ -1,8 +1,9 @@
 #!/bin/bash
-# generates GeoJSON, SQLite and plist samples. deterministic, no downloads.
+# generates GeoJSON, SQLite, plist and notebook samples. no downloads.
 # HUGE=1 also writes huge.sqlite3 (~200 MB) to test the size cap.
 set -euo pipefail
 cd "$(dirname "$0")"
+python3 -I make_notebooks.py
 
 python3 -I - <<'PY'
 import json, random, plistlib, datetime

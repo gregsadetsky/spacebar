@@ -15,3 +15,5 @@ samples/*.json
 samples/*.plist
 .swiftpm/
 .claude-logs/
+node_modules/
+samples/*.ipynb

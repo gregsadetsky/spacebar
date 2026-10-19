@@ -34,6 +34,9 @@ In the next release (or a local build):
 
 - `.plist`: binary, XML and OpenStep property lists, with a collapsible tree,
   JSON view and copy as JSON. All local; the original file is never modified.
+- `.ipynb`: Jupyter notebooks with rendered Markdown, highlighted code, math,
+  saved tables, plots and tracebacks. Offline, with light/dark themes and a
+  hide-code toggle. Uses JupyterLab's rendering components; never runs cells.
 
 ## Update
 
@@ -55,7 +58,7 @@ or by hand: delete `~/Applications/Spacebar.app` and `~/Library/Containers/io.sp
 ## Notes
 
 - a plugin is a folder with: plugin.json, index.html, your js - see [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
-- Spacebar includes GeoJSON, SQLite and property list plugins
+- Spacebar includes GeoJSON, SQLite, property list and Jupyter notebook plugins
 - to write your own plugin, run `scripts/new-plugin.sh`
 
 ## How to develop

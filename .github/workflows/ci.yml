@@ -14,6 +14,17 @@ jobs:
         with:
           fetch-depth: 0   # full history: the build number is the commit count
       - run: sw_vers && xcodebuild -version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/notebook/package-lock.json
+      - name: notebook bundle and rendering tests
+        run: |
+          npm ci --prefix tools/notebook --ignore-scripts
+          npm run build --prefix tools/notebook
+          npm test --prefix tools/notebook
+          git diff --exit-code -- plugins/notebook/vendor
       - name: test (real XCTest on the runner)
         run: make test
       - run: make build

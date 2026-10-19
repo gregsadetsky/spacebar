@@ -60,6 +60,12 @@ expect samples/preferences-binary.plist 'plugin=plist .* outcome=done'
 expect samples/preferences-openstep.plist 'plugin=plist .* outcome=done'
 expect samples/archive.plist 'plugin=plist .* outcome=done'
 expect samples/invalid.plist 'plugin=plist .* outcome=host error: could not preview property list'
+expect samples/analysis.ipynb 'plugin=notebook .* outcome=done'
+expect samples/large-notebook.ipynb 'plugin=notebook .* outcome=done'
+expect samples/legacy-notebook.ipynb 'plugin=notebook .* outcome=done'
+expect samples/empty.ipynb 'plugin=notebook .* outcome=done'
+expect samples/untrusted-notebook.ipynb 'plugin=notebook .* outcome=done'
+expect samples/invalid-notebook.ipynb 'plugin=notebook .* outcome=failed: Invalid notebook cell'
 expect samples/notadb.db       'plugin=sqlite ext=db .* outcome=host error: not a SQLite database'
 
 echo "== matcher via cli"
