@@ -6,30 +6,36 @@ import os
 let log = Logger(subsystem: Host.logSubsystem, category: "extension")
 
 final class PreviewViewController: NSViewController, QLPreviewingController {
+    private var preview: PreviewWebView?
+
     override func loadView() {
-        view = NSView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
+        view = NSView(frame: NSRect(x: 0, y: 0, width: 800, height: 600))
     }
 
     func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
-        log.info("scaffold preview requested for \(url.lastPathComponent, privacy: .public)")
-        let marker = Paths.markerFile
-        let t0 = Date()
-        let text: String
-        if let contents = try? String(contentsOf: marker, encoding: .utf8) {
-            log.info("container read ok in \(Int(Date().timeIntervalSince(t0) * 1000))ms: \(marker.path, privacy: .public)")
-            text = "container ok: \(contents)"
-        } else {
-            log.error("container read FAILED: \(marker.path, privacy: .public)")
-            text = "container read failed: \(marker.path)"
+        let started = Date()
+        let file = FileInfo(url: url)
+        let index = PluginIndex.scanDefault()
+        for w in index.warnings { log.warning("\(w, privacy: .public)") }
+        let pick = index.pick(ext: file.ext, uti: file.uti)
+        if let w = pick.warning { log.warning("\(w, privacy: .public)") }
+        guard let plugin = pick.plugin else {
+            log.info("no plugin for \(file.name, privacy: .public) (uti \(file.uti ?? "nil", privacy: .public)), \(index.plugins.count) plugins installed; falling back")
+            handler(NSError(domain: Host.logSubsystem, code: 1, userInfo: [NSLocalizedDescriptionKey: "no spacebar plugin for this file"]))
+            return
         }
-        let label = NSTextField(wrappingLabelWithString: "Spacebar scaffold: \(url.lastPathComponent)\n\(text)")
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            label.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -40),
-        ])
-        handler(nil)
+
+        let preview = PreviewWebView(frame: view.bounds)
+        preview.autoresizingMask = [.width, .height]
+        view.addSubview(preview)
+        self.preview = preview
+        preview.onLog = { message in log.debug("[\(plugin.manifest.id, privacy: .public)] \(message, privacy: .public)") }
+        preview.onFinish = { outcome in
+            let ms = Int(Date().timeIntervalSince(started) * 1000)
+            let line = "rendered plugin=\(plugin.manifest.id) ext=\(file.ext) size=\(file.size) elapsed=\(ms)ms outcome=\(outcome.label)"
+            if outcome.isSuccess { log.info("\(line, privacy: .public)") } else { log.error("\(line, privacy: .public)") }
+            handler(nil)
+        }
+        preview.render(file: file, plugin: plugin)
     }
 }

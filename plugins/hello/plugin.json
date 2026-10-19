@@ -1,0 +1,9 @@
+{
+  "id": "hello",
+  "name": "Hello",
+  "version": "0.0.1",
+  "matches": { "extensions": ["geojson", "sqlite", "sqlite3"] },
+  "input": "bytes",
+  "maxFileSize": 1048576,
+  "entry": "index.html"
+}

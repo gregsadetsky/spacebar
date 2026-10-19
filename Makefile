@@ -30,7 +30,7 @@ KIT_LIB      := $(KIT_DIR)/libSpacebarKit.a
 
 KIT_SRC      := $(shell find Packages/SpacebarKit/Sources/SpacebarKit -name '*.swift')
 EXT_SRC      := $(shell find Extension -name '*.swift')
-APP_SRC      := $(shell find App -name '*.swift')
+APP_SRC      := $(shell find App -name '*.swift') Extension/PreviewWebView.swift
 PLUGIN_FILES := $(shell find plugins -type f 2>/dev/null)
 
 ifeq ($(CONFIG),release)
