@@ -1,4 +1,4 @@
-import { sb, content, actions, status, setup, el, button, search, size } from './viewer-ui.mjs';
+import { sb, content, status, setup, el, button, size } from './viewer-ui.mjs';
 
 try {
   const data = sb.data;
@@ -23,25 +23,28 @@ try {
   const collect = node => { for (const child of node.children.values()) { rows.push(child); collect(child); } };
   collect(root);
   const folders = new Map(rows.filter(r => r.kind === 'directory').map(r => [r.path, r])); folders.set('', root);
-  let current = root, query = '', visible = [], shown = 0, sortSize = false;
+  let current = root, visible = [], shown = 0;
   setup(`${data.format || 'Archive'} · ${data.entries.length.toLocaleString()}${data.truncated ? '+' : ''} entries`);
   const breadcrumbs = el('nav', 'breadcrumbs'); breadcrumbs.setAttribute('aria-label', 'Archive folders');
   const table = el('table'); const thead = el('thead'); const heading = el('tr');
-  const nameHead = el('th'); nameHead.append(button('Name', () => { sortSize = false; refresh(); }));
-  const sizeHead = el('th', 'size'); sizeHead.append(button('Size ↓', () => { sortSize = true; refresh(); }));
-  heading.append(nameHead, el('th', '', 'Kind'), sizeHead, el('th', '', 'Modified')); thead.append(heading);
+  heading.append(el('th', '', 'Name'), el('th', '', 'Kind'), el('th', 'size', 'Size'), el('th', '', 'Modified')); thead.append(heading);
   const tbody = el('tbody'); table.append(thead, tbody);
   const more = button('Show more', () => page()); more.className = 'paging';
   const empty = el('p', 'empty');
   content.append(breadcrumbs, table, empty, more);
-  actions.append(search('Search archive', value => { query = value.trim().toLocaleLowerCase(); refresh(); }));
-  function navigate(folder) { current = folder; query = ''; actions.querySelector('input').value = ''; refresh(); }
+  function navigate(folder) { current = folder; refresh(); }
+  function pathLink(label, folder) {
+    const link = el('a', '', label); link.href = '#';
+    link.addEventListener('click', event => { event.preventDefault(); navigate(folder); });
+    if (folder === current) link.setAttribute('aria-current', 'location');
+    return link;
+  }
   function page() {
     const end = Math.min(shown + 200, visible.length);
     for (; shown < end; shown++) {
       const row = visible[shown], tr = el('tr'), name = el('td', 'entry-path');
-      if (row.kind === 'directory') name.append(button(`▸ ${query ? row.path : row.name}`, () => navigate(row)));
-      else name.append(el('span', '', query ? row.path : row.name));
+      if (row.kind === 'directory') name.append(button(`▸ ${row.name}`, () => navigate(row)));
+      else name.append(el('span', '', row.name));
       name.querySelector('button')?.classList.add('entry-name');
       if (row.encrypted) name.append(el('span', 'badge', 'Encrypted'));
       if (row.unsafePath) name.append(el('span', 'badge', 'Unusual path'));
@@ -53,13 +56,16 @@ try {
     status.textContent = `${shown.toLocaleString()} of ${visible.length.toLocaleString()} entries${data.truncated ? ' · Partial archive listing' : ''}`;
   }
   function refresh() {
-    visible = query ? rows.filter(r => r.path.toLocaleLowerCase().includes(query)) : [...current.children.values(), ...(current === root ? rows.filter(r => r.unsafePath) : [])];
-    visible.sort((a,b) => (a.kind === 'directory' ? 0 : 1) - (b.kind === 'directory' ? 0 : 1) || (sortSize ? Number(b.size) - Number(a.size) : 0) || a.name.localeCompare(b.name, undefined, { numeric: true }));
-    breadcrumbs.replaceChildren(button('Archive', () => navigate(root)));
+    visible = [...current.children.values(), ...(current === root ? rows.filter(r => r.unsafePath) : [])];
+    visible.sort((a,b) => (a.kind === 'directory' ? 0 : 1) - (b.kind === 'directory' ? 0 : 1) || a.name.localeCompare(b.name, undefined, { numeric: true }));
+    breadcrumbs.replaceChildren(pathLink('Archive', root));
     const parts = current.path.split('/').filter(Boolean);
-    parts.forEach((part,i) => breadcrumbs.append(button(part, () => navigate(folders.get(parts.slice(0,i+1).join('/')) || root))));
+    parts.forEach((part,i) => {
+      const separator = el('span', 'path-separator', ' > '); separator.setAttribute('aria-hidden', 'true');
+      breadcrumbs.append(separator, pathLink(part, folders.get(parts.slice(0,i+1).join('/')) || root));
+    });
     tbody.replaceChildren(); shown = 0; page();
-    empty.hidden = visible.length > 0; empty.textContent = query ? 'No matching entries.' : 'This folder is empty.';
+    empty.hidden = visible.length > 0; empty.textContent = 'This folder is empty.';
     content.scrollTop = 0;
   }
   refresh();

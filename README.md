@@ -35,7 +35,7 @@ In the next release (or a local build):
 - `.plist`: binary, xml and openstep property lists
 - `.ipynb`: jupyter notebooks with rendered markdown, highlighted code, math, saved tables, plots and tracebacks
 - `.md` `.markdown` `.mdown` `.mkd`: rendered markdown, highlighted code, math, contents and source view
-- `.zip` `.tar` `.tar.gz` `.tgz` `.tar.bz2` `.tar.xz` `.7z` `.rar`: browse folders, search entries and sort by name or size
+- `.zip` `.tar` `.tar.gz` `.tgz` `.tar.bz2` `.tar.xz` `.7z` `.rar`: browse folders and view entry sizes and dates
 - `.epub`: cover, author, contents and a readable excerpt of up to 12 sections
 - `.srt` `.vtt`: subtitle cues with timestamps, search and transcript view
 

@@ -45,20 +45,26 @@ test('Markdown removes active HTML and unavailable external images', async t => 
   assert.equal(d.querySelectorAll('.reader script,.reader img,.reader iframe,.reader [onerror]').length, 0);
 });
 
-test('Archive folders, breadcrumbs, literal names, search and paging', async t => {
+test('Archive folders, linked breadcrumbs, literal names and paging', async t => {
   const entries = [{ path: 'Docs/readme.md', kind: 'file', size: 100 }, { path: 'Docs/nested/file.txt', kind: 'file', size: 20 }, { path: '../outside', kind: 'file', size: 0, unsafePath: true }, { path: '<script>.txt', kind: 'file', size: 1 }];
   for (let n = 0; n < 240; n++) entries.push({ path: `file-${n}.txt`, kind: 'file', size: n });
-  const { w, d, outcome } = await view(t, 'archive', { format: 'ZIP', entries, warnings: [], truncated: false });
+  const { d, outcome } = await view(t, 'archive', { format: 'ZIP', entries, warnings: [], truncated: false });
   assert.equal(outcome, 'done'); assert.equal(d.querySelectorAll('tbody tr').length, 200);
   d.querySelector('.paging').click(); assert.equal(d.querySelectorAll('tbody tr').length, 243);
   [...d.querySelectorAll('.entry-name')].find(b => b.textContent.includes('Docs')).click();
   assert.equal(d.querySelectorAll('tbody tr').length, 2);
-  assert.match(d.querySelector('.breadcrumbs').textContent, /Docs/);
-  search(w, d, 'file.txt'); assert.equal(d.querySelectorAll('tbody tr').length, 1);
-  assert.match(d.querySelector('tbody').textContent, /Docs\/nested\/file.txt/);
-  search(w, d, '<script>'); assert.equal(d.querySelectorAll('tbody tr').length, 1);
+  assert.equal(d.querySelector('.breadcrumbs').textContent, 'Archive > Docs');
+  d.querySelector('.entry-name').click();
+  assert.equal(d.querySelector('.breadcrumbs').textContent, 'Archive > Docs > nested');
+  assert.equal(d.querySelector('.breadcrumbs [aria-current=location]').textContent, 'nested');
+  assert.match(d.querySelector('tbody').textContent, /file.txt/);
+  d.querySelectorAll('.breadcrumbs a')[1].click();
+  assert.equal(d.querySelectorAll('tbody tr').length, 2);
+  d.querySelector('.breadcrumbs a').click();
+  d.querySelector('.paging').click();
+  assert.equal(d.querySelectorAll('tbody tr').length, 243);
+  assert.match(d.querySelector('tbody').textContent, /<script>\.txt/);
   assert.equal(d.querySelector('tbody script'), null);
-  search(w, d, 'absent'); assert.match(d.querySelector('.empty').textContent, /No matching/);
 });
 
 test('Subtitle parser handles WebVTT voices, settings, comments and invalid timestamps', () => {

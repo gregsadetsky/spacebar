@@ -57,7 +57,7 @@
   archives, EPUB and subtitles now implemented locally; release pending.
 
 - `.tar.gz` / `.tar` / `.zip` / `.7z` / `.rar`: implemented locally with
-  native libarchive input, folder browsing, search, sizes and dates.
+  native libarchive input, folder browsing, a linked path, sizes and dates.
   ZIP reaches Spacebar through the real Finder extension on this Mac.
   "click an entry to get just that file" (the winrar move) still needs
   the host to extract and hand the file somewhere: a
@@ -202,7 +202,7 @@ implemented, installed locally and waiting for a release + cask bump.
 64 native tests and 12 bundle tests pass. Real Quick Look checks covered
 Markdown, ZIP/TAR/TAR.GZ/7z/RAR, EPUB, SRT, VTT and UTF-16 SRT (178–275 ms),
 plus the expected invalid-file errors. Native WebKit interaction checks
-covered Markdown source/contents/math, archive folders/search, decoded EPUB
+covered Markdown source/contents/math, archive folders/breadcrumbs, decoded EPUB
 covers and illustrations, chapter navigation, subtitle paging/search/
 transcript, dark mode and hostile content sanitization. Samples are generated
 by `samples/make_documents.py`; limits are documented in PLUGINS.md.

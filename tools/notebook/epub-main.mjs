@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { sb, content, actions, status, setup, el, button } from './viewer-ui.mjs';
+import { sb, content, status, setup, el, button } from './viewer-ui.mjs';
 
 export function resolvePath(href, base) {
   try {
@@ -22,7 +22,6 @@ try {
   setup([data.authors?.join(', '), data.language, `${data.totalChapters} sections`].filter(Boolean).join(' · '));
   const sidebar = document.getElementById('sidebar'); sidebar.hidden = false; sidebar.append(el('h2', '', 'Contents'));
   const reader = el('article', 'reader'); content.append(reader);
-  let selected = 0;
   const tocButtons = [];
   for (const entry of data.toc || []) {
     const index = data.chapters.findIndex(chapter => chapter.path === entry.path);
@@ -31,12 +30,8 @@ try {
     if (index < 0) item.title = 'Outside this preview excerpt';
     sidebar.append(item); tocButtons.push({ item, index });
   }
-  const previous = button('← Previous', () => show(selected - 1));
-  const next = button('Next →', () => show(selected + 1));
-  actions.append(button('Contents', () => { sidebar.hidden = !sidebar.hidden; }), previous, next);
   function show(index) {
     if (index < 0 || index >= data.chapters.length) return;
-    selected = index;
     const chapter = data.chapters[index];
     const fragment = DOMPurify.sanitize(chapter.html, {
       USE_PROFILES: { html: true }, RETURN_DOM_FRAGMENT: true,
@@ -61,7 +56,6 @@ try {
     if (raster(data.cover)) { const cover = el('img', 'cover'); cover.src = data.cover; cover.alt = 'Book cover'; reader.append(cover); }
     reader.append(el('h1', 'book-title', data.title), el('p', 'book-author', data.authors?.join(', ') || ''));
     const body = el('div', 'book-body'); body.append(fragment); reader.append(body);
-    previous.disabled = index === 0; next.disabled = index === data.chapters.length - 1;
     for (const entry of tocButtons) entry.item.setAttribute('aria-current', String(entry.index === index));
     status.textContent = `${chapter.title} · ${index + 1} of ${data.chapters.length} preview sections${data.truncated ? ` · Excerpt from ${data.totalChapters} sections; some content may be omitted` : ''}`;
     content.scrollTop = 0;

@@ -30,7 +30,7 @@ self-contained after building; installing it never needs another plugin.
   rendered preview at 100,000 characters. Local and remote image files are
   unavailable; embedded supported images remain offline.
 - `archive-main.mjs` consumes the native `archive` payload and provides
-  folders, breadcrumbs, path search, name/size ordering and 200-row paging.
+  folders, a linked breadcrumb path and 200-row paging.
   ZIP, TAR, compressed TAR, 7z and RAR use the system libarchive. This viewer
   lists entries; it never extracts files. Header provenance is documented in
   `Packages/SpacebarKit/Sources/CArchive/README.md` at the repository root.
