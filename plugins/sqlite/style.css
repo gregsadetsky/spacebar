@@ -12,8 +12,6 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; color: var(--fg); background: var(--bg); display: flex; flex-direction: column; overflow: hidden; }
-header { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 0 auto; }
-header b { color: var(--fg); font-weight: 600; }
 main { display: flex; flex: 1 1 auto; min-height: 0; }
 nav { flex: 0 0 220px; border-right: 1px solid var(--border); background: var(--panel); overflow: auto; padding: 6px 0; }
 nav h3 { margin: 10px 12px 4px; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }

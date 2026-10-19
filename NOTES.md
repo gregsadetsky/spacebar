@@ -82,3 +82,22 @@ on purpose.
 
 caveat: an imported uti only wins if no other installed app declares the
 same extension. `spacebar-cli match <file>` prints the uti the system picked.
+
+## 2026-10-18 what a fresh user actually sees (simulated)
+
+simulated: `make uninstall` (app, registration, container), then the release
+zip with a browser-style quarantine xattr, extracted with ditto, moved to
+~/Applications, opened.
+
+- gatekeeper: "Spacebar.app Not Opened. Apple could not verify Spacebar.app
+  is free of malware" with Done / Move to Trash. no "open anyway" in the
+  dialog itself on macos 15; that button is in system settings → privacy &
+  security, after the first refusal. this is the ad-hoc signature. only
+  developer id + notarization removes it. `brew install --cask` avoids it
+  because the cask strips the quarantine attribute (postflight xattr, or
+  `brew install --no-quarantine`).
+- the extension was registered (and showed "+" enabled) the moment the app
+  landed in ~/Applications, before it ever ran. caveat: pkd may have
+  remembered the earlier "use" election for this bundle id on this machine,
+  so "enabled by default on a brand new mac" is not proven here.
+- after stripping quarantine and opening: plugins synced, previews work.

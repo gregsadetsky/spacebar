@@ -58,27 +58,8 @@
     return { types: types, vertices: vertices, bbox: vertices ? bbox : null };
   }
 
-  function crsNote(root) {
-    var name = root.crs && root.crs.properties && root.crs.properties.name;
-    if (!name) return null;
-    if (/CRS84|4326/i.test(name)) return null;
-    return "crs " + name + " (drawn as if lon/lat)";
-  }
-
   function fmt(n) { return n.toLocaleString("en-US"); }
   function round(n) { return Math.round(n * 1000) / 1000; }
-
-  function renderHeader(summary, note, step, count) {
-    var parts = ["<b>" + fmt(count) + " feature" + (count === 1 ? "" : "s") + "</b>"];
-    Object.keys(summary.types).sort(function (a, b) { return summary.types[b] - summary.types[a]; }).forEach(function (t) {
-      parts.push(t + " " + fmt(summary.types[t]));
-    });
-    if (summary.bbox) parts.push("bbox " + summary.bbox.map(round).join(", "));
-    parts.push(fmt(summary.vertices) + " vertices");
-    if (step > 1) parts.push("<span class=\"warn\">drawing every " + step + (step === 2 ? "nd" : step === 3 ? "rd" : "th") + " vertex</span>");
-    if (note) parts.push("<span class=\"warn\">" + escapeHtml(note) + "</span>");
-    document.getElementById("header").innerHTML = parts.join(" &nbsp;·&nbsp; ");
-  }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; });
@@ -199,7 +180,7 @@
 
   function renderPanel(f, idx) {
     var panel = document.getElementById("panel");
-    if (!f) { panel.innerHTML = "<div class=\"hint\">Hover a feature for its properties. Click to pin.</div>"; return; }
+    if (!f) { panel.innerHTML = "<div class=\"hint\">Hover a feature for its properties.</div>"; return; }
     var props = (f && f.properties) || {};
     var keys = Object.keys(props);
     var t = f.geometry && f.geometry.type ? f.geometry.type : "null";
@@ -214,24 +195,18 @@
   }
 
   function wireInteraction(features, layer) {
-    var pinned = null, hovered = null;
-    function setClass(idx, cls, on) {
+    var hovered = null;
+    function setClass(idx, on) {
       var g = layer.querySelector("g[data-i=\"" + idx + "\"]");
-      if (g) g.classList.toggle(cls, on);
+      if (g) g.classList.toggle("hover", on);
       var tr = document.querySelector("tr[data-i=\"" + idx + "\"]");
-      if (tr) tr.classList.toggle(cls, on);
+      if (tr) tr.classList.toggle("hover", on);
     }
     function hover(idx) {
-      if (hovered !== null) setClass(hovered, "hover", false);
+      if (hovered !== null) setClass(hovered, false);
       hovered = idx;
-      if (idx !== null) { setClass(idx, "hover", true); renderPanel(features[idx], idx); }
-      else if (pinned !== null) renderPanel(features[pinned], pinned);
+      if (idx !== null) { setClass(idx, true); renderPanel(features[idx], idx); }
       else renderPanel(null);
-    }
-    function pin(idx) {
-      if (pinned !== null) setClass(pinned, "pinned", false);
-      pinned = pinned === idx ? null : idx;
-      if (pinned !== null) { setClass(pinned, "pinned", true); renderPanel(features[pinned], pinned); }
     }
     function indexOf(el) {
       var node = el.closest ? el.closest("[data-i]") : null;
@@ -239,7 +214,6 @@
     }
     document.addEventListener("mouseover", function (e) { var i = indexOf(e.target); if (i !== null) hover(i); });
     document.addEventListener("mouseout", function (e) { var i = indexOf(e.target); if (i !== null && i === hovered) hover(null); });
-    document.addEventListener("click", function (e) { var i = indexOf(e.target); if (i !== null) pin(i); });
   }
 
   try {
@@ -248,7 +222,6 @@
     var features = parsed.features;
     var summary = summarize(features);
     var step = summary.vertices > MAX_VERTICES ? Math.ceil(summary.vertices / MAX_VERTICES) : 1;
-    renderHeader(summary, crsNote(parsed.root), step, features.length);
     var proj = makeProjection(summary.bbox);
     var layer = renderMap(features, summary, proj, step);
     renderTable(features);

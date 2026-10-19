@@ -13,6 +13,12 @@ ships with two plugins: `geojson` (zero deps, inline world outline) and
 brew tap <you>/tap && brew install --cask spacebar   # soon
 ```
 
+the build is ad-hoc signed (no apple developer id). a plain download gets
+gatekeeper's "Apple could not verify…" refusal; the cask strips the
+quarantine flag so it opens. if you download the zip yourself: system
+settings → privacy & security → "open anyway" after the first refusal,
+or `xattr -dr com.apple.quarantine Spacebar.app`.
+
 or from source (command line tools are enough, no xcode needed):
 
 ```

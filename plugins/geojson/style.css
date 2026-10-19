@@ -37,22 +37,10 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-header {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 0 0 auto;
-}
-header b { color: var(--fg); font-weight: 600; }
-header .warn { color: var(--hover); }
 main { display: flex; flex: 1 1 auto; min-height: 0; }
 #map { flex: 1 1 auto; min-width: 0; position: relative; }
 #map svg { width: 100%; height: 100%; display: block; }
 #map .world path { fill: var(--land); stroke: var(--coast); stroke-width: 1; vector-effect: non-scaling-stroke; }
-#map .feature { cursor: pointer; }
 #map .feature path, #map .feature polyline {
   stroke: var(--feature); stroke-width: 1.5; vector-effect: non-scaling-stroke; fill: none;
   stroke-linejoin: round; stroke-linecap: round;
@@ -62,8 +50,6 @@ main { display: flex; flex: 1 1 auto; min-height: 0; }
 #map .feature.hover path, #map .feature.hover polyline { stroke: var(--hover); stroke-width: 2.5; }
 #map .feature.hover path.polygon { fill: var(--hover-fill); }
 #map .feature.hover circle { fill: var(--hover); }
-#map .feature.pinned path, #map .feature.pinned polyline { stroke: var(--hover); }
-#map .feature.pinned circle { fill: var(--hover); }
 #map .empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
 aside {
   flex: 0 0 260px;
@@ -83,5 +69,4 @@ th, td { text-align: left; padding: 4px 10px; border-bottom: 1px solid var(--bor
 th { position: sticky; top: 0; background: var(--panel); color: var(--muted); font-weight: 600; z-index: 1; }
 td.num { font-family: var(--mono); text-align: right; }
 tr.hover td { background: var(--hover-fill); }
-tr { cursor: pointer; }
 .caption { padding: 6px 10px; color: var(--muted); }

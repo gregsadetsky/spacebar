@@ -19,23 +19,6 @@
     return (n / 1073741824).toFixed(2) + " GB";
   }
 
-  function renderHeader() {
-    var rows = d.tables.reduce(function (a, t) { return a + (t.rowCount || 0); }, 0);
-    var parts = [
-      "<b>" + esc(sb.file.name) + "</b>",
-      bytes(d.fileSize),
-      d.tables.length + " table" + (d.tables.length === 1 ? "" : "s"),
-      d.views.length + " view" + (d.views.length === 1 ? "" : "s"),
-      d.indexes.length + " index" + (d.indexes.length === 1 ? "" : "es"),
-      "≈ " + fmt(rows) + " rows",
-      "page " + fmt(d.pageSize),
-      d.encoding
-    ];
-    if (d.userVersion) parts.push("user_version " + d.userVersion);
-    if (d.truncated) parts.push("samples truncated (2 MB cap)");
-    document.getElementById("header").innerHTML = parts.join(" &nbsp;·&nbsp; ");
-  }
-
   function renderNav() {
     var html = "";
     function section(title, list, kind, count) {
@@ -122,7 +105,6 @@
 
   try {
     if (!d || !Array.isArray(d.tables)) throw new Error("payload has no tables array");
-    renderHeader();
     renderNav();
     renderDetail();
     sb.done();

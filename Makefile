@@ -41,7 +41,7 @@ endif
 
 SWIFTC := swiftc -sdk $(SDK) -target $(TARGET) $(OPT) -parse-as-library -swift-version 5
 
-.PHONY: all build kit cli test samples samples-huge install uninstall smoke release clean
+.PHONY: all build kit cli icon test samples samples-huge install uninstall smoke release clean
 
 all: build
 
@@ -79,20 +79,29 @@ $(APP)/Contents/MacOS/$(APP_NAME): $(APP_SRC) $(KIT_LIB) App/Info.plist App/App.
 build: $(APPEX)/Contents/MacOS/$(EXT_NAME) $(APP)/Contents/MacOS/$(APP_NAME) $(PLUGIN_FILES)
 	rm -rf $(APP)/Contents/Resources/Plugins
 	@if [ -d plugins ]; then cp -R plugins $(APP)/Contents/Resources/Plugins; fi
+	cp App/icon/AppIcon.icns $(APP)/Contents/Resources/AppIcon.icns
 	codesign --force --sign - --entitlements Extension/Extension.entitlements --timestamp=none $(APPEX)
 	codesign --force --sign - --entitlements App/App.entitlements --timestamp=none $(APP)
 	codesign --verify --deep --strict $(APP)
 	@echo "built $(APP)"
 
 # --- the rest -----------------------------------------------------------------
-# real XCTest needs xcode; with command line tools only, the same test files
-# run through a tiny XCTest look-alike (Packages/SpacebarKit/Tests/XCTestShim)
+icon:
+	swiftc -O scripts/make-icon.swift -o $(BUILD)/make-icon && $(BUILD)/make-icon App/icon/AppIcon.icns
+
+# real XCTest needs xcode. if Xcode.app exists we point at it with DEVELOPER_DIR
+# (no sudo xcode-select needed). with command line tools only, the same test
+# files run through a tiny XCTest look-alike (Packages/SpacebarKit/Tests/XCTestShim)
+# in a separate build dir so the two never mix modules.
+XCODE_DIR ?= $(firstword $(wildcard /Applications/Xcode*.app))
 test:
-	@if xcode-select -p 2>/dev/null | grep -q "Xcode.app"; then \
-		cd Packages/SpacebarKit && swift test; \
+	@if [ -n "$(XCODE_DIR)" ]; then \
+		echo "xcode at $(XCODE_DIR): real XCTest"; \
+		cd Packages/SpacebarKit && DEVELOPER_DIR="$(XCODE_DIR)/Contents/Developer" swift test --scratch-path .build-xctest 2>&1 | grep -E "error|Executed|failed|passed" | tail -5; \
+		test $${PIPESTATUS[0]} -eq 0; \
 	else \
 		echo "no xcode: running tests through the XCTest shim"; \
-		cd Packages/SpacebarKit && SPACEBAR_XCTEST_SHIM=1 swift run spacebar-tests; \
+		cd Packages/SpacebarKit && SPACEBAR_XCTEST_SHIM=1 swift run --scratch-path .build-shim spacebar-tests; \
 	fi
 	scripts/validate-plugins.sh
 
@@ -110,10 +119,14 @@ samples-huge:
 install: build
 	INSTALL_DIR="$(INSTALL_DIR)" scripts/install.sh $(APP)
 
+# full uninstall: app, extension registration, the container with plugins + settings
 uninstall:
-	pluginkit -r "$(INSTALL_DIR)/$(APP_NAME).app/Contents/PlugIns/$(EXT_NAME).appex" 2>/dev/null || true
-	rm -rf "$(INSTALL_DIR)/$(APP_NAME).app"
-	qlmanage -r >/dev/null 2>&1 || true
+	-pkill -x $(APP_NAME)
+	-pluginkit -r "$(INSTALL_DIR)/$(APP_NAME).app/Contents/PlugIns/$(EXT_NAME).appex" 2>/dev/null
+	rm -rf "$(INSTALL_DIR)/$(APP_NAME).app" "/Applications/$(APP_NAME).app"
+	rm -rf "$(HOME)/Library/Containers/$(EXT_ID)" "$(HOME)/Library/Containers/$(APP_ID)"
+	-qlmanage -r >/dev/null 2>&1
+	@echo "uninstalled"
 
 smoke:
 	scripts/smoke.sh
@@ -122,4 +135,4 @@ release:
 	VERSION=$(VERSION) scripts/release.sh
 
 clean:
-	rm -rf $(BUILD) dist Packages/SpacebarKit/.build
+	rm -rf $(BUILD) dist Packages/SpacebarKit/.build Packages/SpacebarKit/.build-shim Packages/SpacebarKit/.build-xctest
