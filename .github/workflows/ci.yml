@@ -11,6 +11,8 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history: the build number is the commit count
       - run: sw_vers && xcodebuild -version
       - name: test (real XCTest on the runner)
         run: make test
