@@ -3,8 +3,14 @@
 ## the short loop
 
 ```
+# first argument: the plugin id (folder name, what the app lists). second: the
+# file extension it previews. often the same word, not always (notebook ipynb)
 scripts/new-plugin.sh toml toml        # plugins/toml/ with a working plugin.json + index.html + index.js
-make build                              # or make install
+
+# make build compiles into build/Spacebar.app and touches nothing else.
+# make install also copies the app to ~/Applications and registers the quick
+# look extension, so pressing space in finder uses your plugin
+make build
 build/Spacebar.app/Contents/MacOS/Spacebar --dev some.toml --plugin toml --snapshot out.png
 ```
 
