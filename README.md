@@ -23,7 +23,7 @@ If previews don't show, go to: *System Settings → General → Login Items & Ex
 
 ## Notes
 
-- a plugin is a folder with: plugin.json, index.html, your js
+- a plugin is a folder with: plugin.json, index.html, your js - see [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
 - Spacebar ships with .geojson and .sqlite3 out of the box
 - to write your own plugin, run `scripts/new-plugin.sh`
 
