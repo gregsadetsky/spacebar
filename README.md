@@ -16,7 +16,8 @@ brew tap gregsadetsky/tap && brew install --cask spacebar
 >
 > For now, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway
 >
-> ... or, run `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`
+> ... or, run
+> `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`
 
 If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
