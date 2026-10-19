@@ -14,7 +14,10 @@
   with an ad-hoc signed app but pairs naturally with the developer id step.
   brew users would keep getting updates through brew; sparkle covers the
   people who downloaded the zip.
-- status tab says "press space on a .geojson or .sqlite3 file": hardcoded.
+- status tab: the "press space on a .geojson or .sqlite3 file" line is the
+  one sentence that says what the app does, and it's rendered as a grey
+  caption under a status row. make it the obvious thing: bigger, first,
+  phrased as what the software does. also: it is hardcoded.
   it should list what is actually previewable right now, computed from the
   enabled plugins' extensions (cap at 5 to 10, then "…"). check how it reads
   after installing or disabling a plugin.
