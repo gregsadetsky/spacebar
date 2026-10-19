@@ -1,6 +1,6 @@
 #!/bin/bash
 # render an svg (1024x1024 viewBox) into App/icon/AppIcon.icns using quick look's
-# svg renderer. usage: scripts/svg-to-icns.sh App/icon/drafts/v4.svg
+# svg renderer. usage: scripts/svg-to-icns.sh App/icon/AppIcon.svg
 set -euo pipefail
 svg="${1:?svg}"; out="${2:-App/icon/AppIcon.icns}"
 tmp=$(mktemp -d); set=$tmp/AppIcon.iconset; mkdir -p "$set"

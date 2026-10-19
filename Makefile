@@ -86,9 +86,9 @@ build: $(APPEX)/Contents/MacOS/$(EXT_NAME) $(APP)/Contents/MacOS/$(APP_NAME) $(P
 	@echo "built $(APP)"
 
 # --- the rest -----------------------------------------------------------------
-# the app icon is App/icon/drafts/a1.svg rendered to icns
+# the app icon is App/icon/AppIcon.svg rendered to icns
 icon:
-	scripts/svg-to-icns.sh App/icon/drafts/a1.svg
+	scripts/svg-to-icns.sh App/icon/AppIcon.svg
 
 # real XCTest needs xcode. if Xcode.app exists we point at it with DEVELOPER_DIR
 # (no sudo xcode-select needed). with command line tools only, the same test
