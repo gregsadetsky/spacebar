@@ -29,15 +29,12 @@ Shipped with the app:
 
 - `.geojson`: map of the features, hover for properties
 - `.sqlite3` `.sqlite` `.db`: tables, rows, schema
-
-In the next release (or a local build):
-
 - `.plist`: binary, xml and openstep property lists
 - `.ipynb`: jupyter notebooks with rendered markdown, highlighted code, math, saved tables, plots and tracebacks
-- `.md` `.markdown` `.mdown` `.mkd`: rendered markdown, highlighted code, math, contents and source view
-- `.zip` `.tar` `.tar.gz` `.tgz` `.tar.bz2` `.tar.xz` `.7z` `.rar`: browse folders and view entry sizes and dates
-- `.epub`: cover, author, contents and a readable excerpt of up to 12 sections
-- `.srt` `.vtt`: subtitle cues with timestamps and duration
+- `.md`: rendered markdown with highlighted code and math
+- `.zip` `.tar.gz` `.7z` `.rar` and friends: browse the archive, sizes and dates
+- `.epub`: cover, author, contents and an excerpt
+- `.srt` `.vtt`: subtitle cues with timestamps
 
 ## Update
 
