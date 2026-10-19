@@ -27,9 +27,10 @@ cask "spacebar" do
   end
 
   caveats <<~EOS
+    Ready. Press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file in Finder.
+    The Spacebar app in /Applications shows the status and manages plugins; you don't need to open it.
     Unsigned build. If previews don't show up, enable the extension:
       System Settings → General → Login Items & Extensions → Quick Look → Spacebar
-    Then press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file.
-    More plugins can be added; see https://github.com/gregsadetsky/spacebar
+    More plugins: https://github.com/gregsadetsky/spacebar
   EOS
 end
