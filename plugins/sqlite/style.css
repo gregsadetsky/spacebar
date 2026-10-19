@@ -32,10 +32,9 @@ th { position: sticky; top: 0; background: var(--panel); color: var(--muted); fo
 td.num { font-family: var(--mono); text-align: right; }
 td.null { color: var(--muted); font-style: italic; }
 td.blob { color: var(--muted); font-family: var(--mono); }
-.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; background: var(--badge); color: var(--muted); margin-left: 6px; vertical-align: 1px; }
-.badge.pk { background: var(--accent-bg); color: var(--accent); }
-.columns { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 10px; border-bottom: 1px solid var(--border); flex: 0 0 auto; color: var(--muted); }
-.columns .col b { color: var(--fg); font-weight: 500; }
-.columns .col .t { font-family: var(--mono); font-size: 11px; margin-left: 4px; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { color: var(--fg); }
+th.sorted { color: var(--accent); }
+th .arrow { font-size: 9px; margin-left: 4px; }
 pre { margin: 0; padding: 10px 12px; font: 12px/1.5 var(--mono); white-space: pre-wrap; word-break: break-word; }
 .caption { padding: 6px 10px; color: var(--muted); }

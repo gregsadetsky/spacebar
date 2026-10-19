@@ -5,7 +5,7 @@
   "use strict";
   var sb = window.spacebar;
   var d = sb.data;
-  var state = { selected: 0, tab: "rows" };
+  var state = { selected: 0, tab: "rows", sort: {} }; // sort[tableName] = {col, dir: "asc"|"desc"}
   var items = []; // nav items: {kind: table|view|index, obj}
 
   function esc(s) {
@@ -61,16 +61,30 @@
       if (state.tab === "schema") {
         html += "<div class=\"scroll\"><pre>" + esc(o.sql || "") + "</pre></div>";
       } else {
-        html += "<div class=\"columns\">" + o.columns.map(function (c) {
-          return "<span class=\"col\"><b>" + esc(c.name) + "</b><span class=\"t\">" + esc(c.type || "") + "</span>" +
-            (c.pk ? "<span class=\"badge pk\">PK</span>" : "") + (c.notnull ? "<span class=\"badge\">NOT NULL</span>" : "") + "</span>";
-        }).join("") + "</div>";
-        html += "<div class=\"scroll\"><table><thead><tr>" + o.columns.map(function (c) { return "<th>" + esc(c.name) + "</th>"; }).join("") + "</tr></thead><tbody>";
-        o.sample.forEach(function (row) { html += "<tr>" + row.map(cell).join("") + "</tr>"; });
+        var sort = state.sort[o.name] || null;
+        var rows = o.sample.slice();
+        if (sort) {
+          var ci = sort.col, dir = sort.dir === "asc" ? 1 : -1;
+          rows.sort(function (a, b) {
+            var x = a[ci], y = b[ci];
+            var xn = x === null || x === undefined, yn = y === null || y === undefined;
+            if (xn && yn) return 0; if (xn) return 1; if (yn) return -1;   // nulls last either way
+            if (typeof x === "number" && typeof y === "number") return (x - y) * dir;
+            if (typeof x === "object" || typeof y === "object") return 0;  // blobs keep their place
+            return String(x).localeCompare(String(y), undefined, { numeric: true }) * dir;
+          });
+        }
+        html += "<div class=\"scroll\"><table><thead><tr>" + o.columns.map(function (c, i) {
+          var active = sort && sort.col === i;
+          return "<th class=\"sortable" + (active ? " sorted" : "") + "\" data-col=\"" + i + "\" title=\"click to sort\">" + esc(c.name) +
+            (active ? "<span class=\"arrow\">" + (sort.dir === "asc" ? "▲" : "▼") + "</span>" : "") + "</th>";
+        }).join("") + "</tr></thead><tbody>";
+        rows.forEach(function (row) { html += "<tr>" + row.map(cell).join("") + "</tr>"; });
         html += "</tbody></table>";
         var shown = o.sample.length;
         var total = o.rowCount === null ? "an unknown number of" : fmt(o.rowCount);
         html += "<div class=\"caption\">" + (shown ? "first " + shown + " of " + total + " rows" : "no rows") +
+          (sort ? ", sorted within these " + shown : "") +
           (o.rowCount === null ? " (count skipped, table too large for the 200 ms budget)" : "") + "</div></div>";
       }
     } else {
@@ -93,7 +107,16 @@
     var item = e.target.closest ? e.target.closest("[data-i]") : null;
     if (item) return select(parseInt(item.getAttribute("data-i"), 10));
     var tab = e.target.closest ? e.target.closest("[data-tab]") : null;
-    if (tab) { state.tab = tab.getAttribute("data-tab"); renderDetail(); }
+    if (tab) { state.tab = tab.getAttribute("data-tab"); renderDetail(); return; }
+    var th = e.target.closest ? e.target.closest("th[data-col]") : null;
+    if (th && items[state.selected] && items[state.selected].kind === "table") {
+      var name = items[state.selected].obj.name, col = parseInt(th.getAttribute("data-col"), 10);
+      var cur = state.sort[name];
+      if (!cur || cur.col !== col) state.sort[name] = { col: col, dir: "asc" };     // none -> asc
+      else if (cur.dir === "asc") state.sort[name] = { col: col, dir: "desc" };     // asc -> desc
+      else delete state.sort[name];                                                  // desc -> none
+      renderDetail();
+    }
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "ArrowDown") { select(state.selected + 1); e.preventDefault(); }
