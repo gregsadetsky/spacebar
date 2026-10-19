@@ -65,6 +65,13 @@
   xml, csv, tsv, toml), Parkour (parquet, csv, json, arrow), the VS Code
   data preview extension (parquet, arrow, avro, json, yaml, csv, excel).
   parquet keeps coming up as the one nothing on the mac previews.
+- ableton live sets (`.als`, people ask for this): gzipped xml. a plugin
+  with `bytes` input + a vendored gunzip (pako) + the browser's DOMParser
+  can show tempo, tracks, clip names, devices and plugins used, maybe a
+  timeline sketch. sets can be tens of MB gzipped, so watch the 3 s budget
+  or add a native `gzip` input kind so the host inflates it first. needs
+  a host release to claim the extension (`com.ableton.live-set` or
+  whatever uti live registers on that mac; check with spacebar-cli match).
 - other candidates already in QLSupportedContentTypes with no plugin yet:
   parquet, arrow/feather, ipynb (render cells + outputs), toml, kml, mbtiles
   / pmtiles (map), har, jsonl, wasm (exports/imports), npy/npz, h5, fit/tcx
