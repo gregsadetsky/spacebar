@@ -47,11 +47,13 @@
   <div class="snippet">
     <pre id="install">brew tap gregsadetsky/tap
 brew trust gregsadetsky/tap
-brew install --cask spacebar</pre>
+brew install --cask spacebar
+open -a Spacebar</pre>
     <button type="button" class="copy" aria-label="Copy to clipboard" title="Copy">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/></svg>
     </button>
   </div>
+  <p>Opening the app once registers the Quick Look extension with macOS. Then press space on a file in Finder.</p>
   <blockquote>
     <p>Note: the app is not currently signed with an Apple Developer ID. If you're having permission problems, either go to System Settings → Privacy &amp; Security → (find the app at the bottom of the window, then click) Open Anyway</p>
     <p>... or, run<br><code>xattr -dr com.apple.quarantine /Applications/Spacebar.app</code></p>

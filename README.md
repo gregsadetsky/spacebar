@@ -12,7 +12,10 @@ It also lets developers write plugins to support more kinds of files - just by w
 brew tap gregsadetsky/tap
 brew trust gregsadetsky/tap
 brew install --cask spacebar
+open -a Spacebar
 ```
+
+Opening the app once registers the Quick Look extension with macOS. Then press space on a file in Finder.
 
 > Note: the app is not currently signed with an Apple Developer ID. If you're having permission problems, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway
 >

@@ -18,18 +18,19 @@ cask "spacebar" do
     "~/Library/Containers/io.spacebar.app",
   ]
 
-  # steps run in homebrew's sandbox: launching the app from here is refused by
-  # launch services, so the extension copies its bundled plugins itself on first use.
+  # steps run in homebrew's sandbox: launching the app, lsregister and pluginkit
+  # are all refused from here, so the user opens the app once to register the
+  # quick look extension (see caveats).
   postflight_steps do
     run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Spacebar.app"],
                           writable_paths: ["Spacebar.app"], writable_base: :appdir, must_succeed: false
-    run "/usr/bin/pluginkit", args: ["-e", "use", "-i", "io.spacebar.app.QuickLook"], must_succeed: false
   end
 
   caveats <<~EOS
-    Ready. Press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file in Finder.
-    The Spacebar app in /Applications shows the status and manages plugins; you don't need to open it.
-    Unsigned build. If previews don't show up, enable the extension:
+    One more step: open Spacebar once so macOS registers the Quick Look extension:
+      open -a Spacebar
+    Then press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file in Finder.
+    Unsigned build. If previews still don't show, enable the extension:
       System Settings → General → Login Items & Extensions → Quick Look → Spacebar
     More plugins: https://github.com/gregsadetsky/spacebar
   EOS
