@@ -23,6 +23,13 @@ brew install --cask spacebar
 
 If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
+## Plugins
+
+Shipped with the app:
+
+- `.geojson`: map of the features, hover for properties
+- `.sqlite3` `.sqlite` `.db`: tables, rows, schema
+
 ## Update
 
 ```
