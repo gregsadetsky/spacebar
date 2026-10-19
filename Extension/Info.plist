@@ -29,7 +29,33 @@
 			<key>QLSupportedContentTypes</key>
 			<array>
 				<string>public.geojson</string>
+				<string>com.topografix.gpx</string>
+				<string>public.ndjson</string>
 				<string>io.spacebar.sqlite</string>
+				<string>io.spacebar.kml</string>
+				<string>io.spacebar.kmz</string>
+				<string>io.spacebar.topojson</string>
+				<string>io.spacebar.mbtiles</string>
+				<string>io.spacebar.pmtiles</string>
+				<string>io.spacebar.parquet</string>
+				<string>io.spacebar.arrow</string>
+				<string>io.spacebar.feather</string>
+				<string>io.spacebar.avro</string>
+				<string>io.spacebar.msgpack</string>
+				<string>io.spacebar.ipynb</string>
+				<string>io.spacebar.toml</string>
+				<string>io.spacebar.org</string>
+				<string>io.spacebar.rst</string>
+				<string>io.spacebar.adoc</string>
+				<string>io.spacebar.har</string>
+				<string>io.spacebar.jsonl</string>
+				<string>io.spacebar.wasm</string>
+				<string>io.spacebar.npy</string>
+				<string>io.spacebar.npz</string>
+				<string>io.spacebar.h5</string>
+				<string>io.spacebar.hdf5</string>
+				<string>io.spacebar.fit</string>
+				<string>io.spacebar.tcx</string>
 			</array>
 			<key>QLSupportsSearchableItems</key>
 			<false/>

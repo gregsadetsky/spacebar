@@ -20,8 +20,10 @@ final class PreviewViewController: NSViewController, QLPreviewingController {
         let pick = index.pick(ext: file.ext, uti: file.uti)
         if let w = pick.warning { log.warning("\(w, privacy: .public)") }
         guard let plugin = pick.plugin else {
-            log.info("no plugin for \(file.name, privacy: .public) (uti \(file.uti ?? "nil", privacy: .public)), \(index.plugins.count) plugins installed; falling back")
-            handler(NSError(domain: Host.logSubsystem, code: 1, userInfo: [NSLocalizedDescriptionKey: "no spacebar plugin for this file"]))
+            let (fallback, kind) = FallbackView.make(for: file, frame: view.bounds)
+            view.addSubview(fallback)
+            log.info("no plugin for \(file.name, privacy: .public) (uti \(file.uti ?? "nil", privacy: .public)), \(index.plugins.count) plugins installed; built-in \(kind, privacy: .public) fallback")
+            handler(nil)
             return
         }
 

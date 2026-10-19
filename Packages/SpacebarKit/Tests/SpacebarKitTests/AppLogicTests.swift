@@ -74,5 +74,15 @@ final class AppLogicTests: XCTestCase {
         try "v2".write(to: bundle.appendingPathComponent("p/index.html"), atomically: true, encoding: .utf8)
         XCTAssertEqual(try PluginInstaller.syncBundled(from: bundle, to: plugins), ["p"], "same version, still bundled: refreshed")
         XCTAssertEqual(try String(contentsOf: plugins.appendingPathComponent("p/index.html"), encoding: .utf8), "v2")
+
+        // the app stops shipping p: the bundled copy goes away, a user plugin next to it stays
+        let user = tmp.url.appendingPathComponent("u")
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        try "{\"id\":\"u\",\"name\":\"U\",\"version\":\"0.1.0\",\"matches\":{\"extensions\":[\"u\"]},\"input\":\"text\"}".write(to: user.appendingPathComponent("plugin.json"), atomically: true, encoding: .utf8)
+        try "u".write(to: user.appendingPathComponent("index.html"), atomically: true, encoding: .utf8)
+        _ = try PluginInstaller.installUserPlugin(from: user, to: plugins)
+        try FileManager.default.removeItem(at: bundle.appendingPathComponent("p"))
+        XCTAssertEqual(try PluginInstaller.syncBundled(from: bundle, to: plugins), [])
+        XCTAssertEqual(PluginIndex.scan(pluginsDir: plugins, disabled: []).plugins.map(\.manifest.id), ["u"])
     }
 }

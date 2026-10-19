@@ -63,3 +63,22 @@ entitlement is on, and the host enforces offline behaviour instead:
 a WKContentRuleList blocks every http/https/ws/ftp load (subresources too),
 and `decidePolicyFor` cancels non-file navigations. the hello plugin's
 fetch("https://example.com") is logged as blocked; smoke.sh checks for it.
+
+## 2026-10-18 declining a file does not fall back to the system preview
+
+the brief says "no plugin → return an NSError and macos shows its default
+preview". tested on 15.7.7 with a .gpx file: the panel shows the generic
+icon card with our error string as a header. apple's text preview never
+runs once an extension has claimed the type. so claiming a broad list of
+types would make those files preview worse for anyone without a plugin.
+
+what the host does instead (Extension/FallbackView.swift): no plugin and
+the uti conforms to public.text → a plain monospaced text view (first 2 MB);
+otherwise a one-line "No Spacebar plugin for .ext files" note. the curated
+list is in Extension/Info.plist (QLSupportedContentTypes), the imported
+utis for extensions macos doesn't know in App/Info.plist. types macos
+already previews well (svg, md, yaml, csv, epub, 3d formats) are left out
+on purpose.
+
+caveat: an imported uti only wins if no other installed app declares the
+same extension. `spacebar-cli match <file>` prints the uti the system picked.

@@ -23,6 +23,7 @@ public enum PluginInstaller {
     /// `pluginsDir`. a bundled plugin overwrites the installed copy when its
     /// version is newer or when the installed copy is also bundled; a
     /// user-installed plugin with the same id is never touched.
+    /// bundled plugins the app no longer ships are removed (user plugins never are).
     /// returns the ids that were (re)installed.
     @discardableResult
     public static func syncBundled(from bundleDir: URL, to pluginsDir: URL) throws -> [String] {
@@ -30,6 +31,11 @@ public enum PluginInstaller {
         try fm.createDirectory(at: pluginsDir, withIntermediateDirectories: true)
         var installed: [String] = []
         let sources = (try? fm.contentsOfDirectory(at: bundleDir, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? []
+        let shipped = Set(sources.map(\.lastPathComponent))
+        for dir in (try? fm.contentsOfDirectory(at: pluginsDir, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) ?? [] {
+            let isBundled = fm.fileExists(atPath: dir.appendingPathComponent(bundledMarker).path)
+            if isBundled && !shipped.contains(dir.lastPathComponent) { try? fm.removeItem(at: dir) }
+        }
         for src in sources.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             guard let manifest = try? Manifest.load(fromDirectory: src), manifest.id == src.lastPathComponent else { continue }
             let dest = pluginsDir.appendingPathComponent(manifest.id, isDirectory: true)
