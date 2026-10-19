@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Spacebar</title>
-  <meta name="description" content="Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it. Ships with GeoJSON and SQLite.">
+  <meta name="description" content="Spacebar lets you preview lots of different kinds of files in the macOS Finder, like .sqlite3 and .geojson. Developers can write plugins for more kinds of files, just by writing html and javascript.">
   <meta property="og:title" content="Spacebar">
-  <meta property="og:description" content="Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it. Ships with GeoJSON and SQLite.">
+  <meta property="og:description" content="Preview lots of different kinds of files in the macOS Finder, like .sqlite3 and .geojson. Write plugins for more, in html and javascript.">
   <meta property="og:image" content="https://spacebar.greg.technology/og.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
@@ -15,24 +15,35 @@
     video, img { max-width: 100%; border: 1px solid #ccc; }
     code, pre { font: 14px/1.5 ui-monospace, Menlo, monospace; }
     pre { background: #f4f4f4; padding: 10px; overflow: auto; }
-    @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img { border-color: #444; } }
+    blockquote { margin: 0; padding: 10px 14px; border-left: 3px solid #ccc; }
+    @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img, video { border-color: #444; } blockquote { border-color: #444; } }
   </style>
 </head>
 <body>
   <h1>Spacebar</h1>
-  <p>Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it.</p>
-  <video src="preview.mp4" autoplay loop muted playsinline poster="og.png" width="820" aria-label="Finder window; space opens a GeoJSON map, then a SQLite table browser"></video>
-  <ul>
-    <li>A plugin is a folder: <code>plugin.json</code>, <code>index.html</code>, your JS. No build step.</li>
-    <li>The host hands the plugin the file (text, bytes, JSON, or a native SQLite summary) and shows the result.</li>
-    <li>Ships with <code>geojson</code> (map, zero dependencies) and <code>sqlite</code> (tables, rows, schema).</li>
-    <li>Offline by design: no network, no filesystem, sandboxed.</li>
-    <li>Dev harness in the app and in the browser. <code>scripts/new-plugin.sh</code> gives you a working plugin to edit.</li>
-  </ul>
+  <p>Spacebar lets you preview lots of different kinds of files in the macOS Finder, like .sqlite3 and .geojson</p>
+  <p>It also lets developers write plugins to support more kinds of files - just by writing html and javascript!</p>
+  <video src="preview.mp4" autoplay loop muted playsinline poster="og.png" width="900" aria-label="Finder window; space opens a GeoJSON map, then a SQLite table browser"></video>
+
   <h2>Install</h2>
   <pre>brew tap gregsadetsky/tap &amp;&amp; brew install --cask spacebar</pre>
-  <p>Not signed with an Apple developer id yet: macOS refuses it once. System Settings → Privacy &amp; Security → Open Anyway, or <code>xattr -dr com.apple.quarantine ~/Applications/Spacebar.app</code>. Then, if previews don't show: System Settings → General → Login Items &amp; Extensions → Quick Look → Spacebar.</p>
-  <h2>Source</h2>
-  <p><a href="https://github.com/gregsadetsky/spacebar">github.com/gregsadetsky/spacebar</a>, MIT.</p>
+  <blockquote>
+    <p>Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).</p>
+    <p>For now, either go to System Settings → Privacy &amp; Security → (find the app at the bottom of the window, then click) Open Anyway</p>
+    <p>... or, run <code>xattr -dr com.apple.quarantine ~/Applications/Spacebar.app</code></p>
+  </blockquote>
+  <p>If previews don't show, go to: <em>System Settings → General → Login Items &amp; Extensions → Quick Look</em> and make sure that Spacebar is enabled</p>
+
+  <h2>Notes</h2>
+  <ul>
+    <li>a plugin is a folder with: plugin.json, index.html, your js</li>
+    <li>Spacebar ships with .geojson and .sqlite3 out of the box</li>
+    <li>to write your own plugin, run <code>scripts/new-plugin.sh</code></li>
+  </ul>
+
+  <h2>How to develop</h2>
+  <p>(you don't need to do this to write plugins)</p>
+  <p><code>make install</code>, <code>make test</code>, <code>make smoke</code>, <code>make release</code></p>
+  <p><a href="https://github.com/gregsadetsky/spacebar">github.com/gregsadetsky/spacebar</a> · MIT</p>
 </body>
 </html>
