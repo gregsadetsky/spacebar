@@ -14,9 +14,7 @@ brew trust gregsadetsky/tap
 brew install --cask spacebar
 ```
 
-> Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).
->
-> For now, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway
+> Note: the app is not currently signed with an Apple Developer ID. If you're having permission problems, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway
 >
 > ... or, run  
 > `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`
