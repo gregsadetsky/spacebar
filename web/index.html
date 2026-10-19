@@ -21,10 +21,15 @@
     video, img { max-width: 100%; border: 1px solid #ccc; }
     code, pre { font: 14px/1.5 ui-monospace, Menlo, monospace; }
     pre { background: #f4f4f4; padding: 10px; overflow: auto; }
+    .snippet { position: relative; }
+    .snippet pre { padding-right: 44px; }
+    .copy { position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #ccc; border-radius: 6px; background: #fff; color: #444; cursor: pointer; padding: 0; }
+    .copy:hover { background: #eee; }
+    .copy.done { color: #1a7f37; border-color: #1a7f37; }
     blockquote { margin: 1.5em 0; padding: 0 14px; border-left: 3px solid #ccc; }
     blockquote p:first-child { margin-top: 0; }
     blockquote p:last-child { margin-bottom: 0; }
-    @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img, video { border-color: #444; } blockquote { border-color: #444; } hr { border-color: #444; } }
+    @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img, video { border-color: #444; } blockquote { border-color: #444; } hr { border-color: #444; } .copy { background: #333; color: #ddd; border-color: #555; } .copy:hover { background: #444; } .copy.done { color: #3fb950; border-color: #3fb950; } }
   </style>
 </head>
 <body>
@@ -39,9 +44,14 @@
   <video src="preview.mp4" autoplay loop muted playsinline poster="og.png" width="900" aria-label="Finder window; space opens a GeoJSON map, then a SQLite table browser"></video>
 
   <h2>Install</h2>
-  <pre>brew tap gregsadetsky/tap
+  <div class="snippet">
+    <pre id="install">brew tap gregsadetsky/tap
 brew trust gregsadetsky/tap
 brew install --cask spacebar</pre>
+    <button type="button" class="copy" aria-label="Copy to clipboard" title="Copy">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/></svg>
+    </button>
+  </div>
   <blockquote>
     <p>Note: the app is not currently signed with an Apple Developer ID. If you're having permission problems, either go to System Settings → Privacy &amp; Security → (find the app at the bottom of the window, then click) Open Anyway</p>
     <p>... or, run<br><code>xattr -dr com.apple.quarantine ~/Applications/Spacebar.app</code></p>
@@ -63,5 +73,15 @@ brew install --cask spacebar</pre>
 
   <hr>
   <p><em><a href="https://github.com/gregsadetsky/spacebar">More information in the repo!</a></em></p>
+  <script>
+    document.querySelector(".copy").addEventListener("click", function () {
+      var btn = this, text = document.getElementById("install").textContent;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.classList.add("done"); btn.title = "Copied";
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>';
+        setTimeout(function () { location.reload(); }, 1500);
+      });
+    });
+  </script>
 </body>
 </html>
