@@ -183,3 +183,23 @@ a fresh agent doing one of these: read PLUGINS.md, then
 `scripts/new-plugin.sh <id> <ext>`, and check whether the uti is already
 in Extension/Info.plist (plist is now claimed; csv, tsv and Ableton still
 need host changes and a release before Homebrew users can preview them).
+
+## plugins with a build step (typescript, vite)
+
+- today a plugin is whatever is in the folder; the host loads `entry` and
+  nothing else. that already works with a build step as long as the built
+  output lands in the plugin folder (vite `build.outDir` = the plugin dir,
+  relative asset paths via `base: "./"`). nothing in the host needs to
+  change for that.
+- what's missing is the recipe and a template: a `templates/vite-ts/`
+  plugin with `plugin.json` at the root, `src/` in typescript, a vite config
+  that builds into `dist/` and `"entry": "dist/index.html"`, plus `.d.ts`
+  typings for `window.spacebar` (host, plugin, file, input, data per input
+  kind, theme, done/fail/log). `scripts/new-plugin.sh --vite` could copy it.
+- decide what gets shipped/installed: the whole folder with `src/` and
+  `node_modules/` excluded (a `.spacebarignore`? or only ship `dist/` +
+  `plugin.json`), and what the validator checks for built plugins (no
+  absolute urls in dist, entry exists).
+- hot reload in the dev harness: vite's dev server would need network
+  (blocked by design); instead watch the plugin folder and reload the
+  webview on change, which works with `vite build --watch`.
