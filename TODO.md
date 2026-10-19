@@ -98,3 +98,69 @@
   marketplace exists.
 - sandbox note: the app (not the extension) does all downloading, so no
   entitlement changes. plugins stay offline at runtime either way.
+
+## plugin survey (2026-10-19)
+
+counts on greg's mac (home folder, skipping caches, node_modules, .git,
+site-packages, build dirs): plist 3367, sqlite 1689, csv 1280, stl 1074,
+srt 757, lock 1218, env 449, vtt 286, pickle/pkl 264, ipynb 102, sqlite3 99,
+pcap 48, step 44, safetensors 40, onnx 32, geojson 28, npz 23, h5 15, npy 13,
+kml 12, parquet 3. generic ones for scale: json 228k, md 31k, yaml 26k,
+log 15k, xml 9k, toml 2.6k, jsonl 3k. online: glance's readme names plist,
+ts and xml as types macos doesn't handle; its faq collects requests as
+issues. parkour exists only for parquet/arrow/csv/json. nobody previews
+ableton sets.
+
+### next plugins, in order
+
+1. **plist, binary and xml** (gregsadetsky/i-just-want-to-see-the-plist is
+   the spec: show it as a tree/json, never write anything, all local).
+   host side: add an input kind `plist` where SpacebarKit parses with
+   PropertyListSerialization (handles binary, xml and openstep in one call)
+   and hands the plugin a json object; dates → iso strings, data → `{"data":
+   <base64>, "bytes": n}`. plugin side: collapsible tree + "copy as json".
+   claim `com.apple.property-list` in Extension/Info.plist. RISK: the brief
+   lists plist among the types apple reserves for its own preview; test
+   first with a quick `hello` plugin on a .plist and read the log. if apple
+   wins, the plugin is still useful in the app's dev harness and the
+   browser harness, and the fallback is a `.bplist`/`.plist.json` dance.
+2. **ipynb**: json input, render markdown cells (small vendored md
+   renderer or a minimal one), code cells with the language from metadata,
+   outputs (text, html, png/jpeg base64 images, error tracebacks). cap long
+   outputs. `io.spacebar.ipynb` is already claimed.
+3. **ableton `.als`**: gzipped xml (see plugin ideas above). the friend
+   gift. needs a host release to claim the uti; check what uti live
+   registers with `spacebar-cli match set.als` on a mac that has live.
+4. **ai model files** (safe, header-only, never executes anything):
+   - `.safetensors`: 8-byte little-endian header length, then utf-8 json
+     with tensor names, dtypes, shapes, offsets, plus `__metadata__`. show
+     the table and the total parameter count. bytes input is fine for the
+     header but the files are GBs: needs a host-side "first N bytes" input
+     (e.g. `"input": "head", "headBytes": 1048576`) or a native parser.
+   - `.gguf`: magic + version + key/value metadata (architecture, context
+     length, tokenizer…) + tensor infos, all in the header. same "head"
+     input.
+   - `.onnx`: protobuf; graph nodes, inputs/outputs, opset. needs a small
+     vendored protobuf decoder; initializers can be huge, head input again.
+   - `.pt`/`.pth`/`.ckpt`: zip archives containing pickles. list the zip
+     entries and run a pickle *disassembler* (opcode walk, like python's
+     pickletools) to show which classes/modules it references. never
+     unpickle, say so in the panel.
+   - `.pkl`/`.pickle`: same disassembler, standalone. 264 of them here.
+   - `.npy`/`.npz`: tiny header (dtype, shape, fortran order), npz is a zip
+     of npy. easy and safe.
+   - `.h5`: hdf5 group/dataset tree; needs a vendored hdf5 reader (jsfive
+     exists) or a native one. medium.
+5. **csv/tsv** (1280 here): real columns, sortable like the sqlite viewer.
+   apple previews csv as text today; whether a third party can take
+   `public.comma-separated-values-text` is the same test as plist.
+6. **srt/vtt** subtitles (1000+ here): timestamps + text, trivial, text input.
+7. **stl** (1074, apple already previews 3d), **step/dxf**: skip for now.
+8. **.env / .lock / .log**: text with light highlighting; cheap, but
+   .env is a dotfile with no extension in finder's eyes (uti lookup by
+   extension fails), so probably not reachable.
+
+a fresh agent doing one of these: read PLUGINS.md, then
+`scripts/new-plugin.sh <id> <ext>`, and check whether the uti is already
+in Extension/Info.plist (plist and csv are not; they need the host change
+above plus an entry there).
