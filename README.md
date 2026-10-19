@@ -33,9 +33,7 @@ Shipped with the app:
 In the next release (or a local build):
 
 - `.plist`: binary, xml and openstep property lists
-- `.ipynb`: Jupyter notebooks with rendered Markdown, highlighted code, math,
-  saved tables, plots and tracebacks. Offline, with light/dark themes and a
-  hide-code toggle. Uses JupyterLab's rendering components; never runs cells.
+- `.ipynb`: jupyter notebooks with rendered markdown, highlighted code, math, saved tables, plots and tracebacks
 
 ## Update
 
