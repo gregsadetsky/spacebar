@@ -33,6 +33,12 @@
 
 ## plugin ideas
 
+- task: survey which extensions actually matter. count extensions on this
+  mac (find ~ -type f, group by extension, ignore caches and node_modules),
+  and read the issue trackers / supported lists of the open source quick
+  look apps (glance, quicklookjs, SourceCodeSyntaxHighlight, QLMarkdown,
+  OnePreview, Parkour) for what people ask for. ipynb first candidate.
+
 - `.tar.gz` / `.tar` / `.zip`: list the entries (name, size, date) like a
   file browser. the host can do the listing natively with libarchive
   (ships with macos, /usr/lib/libarchive.dylib) as a new `archive` input, so
