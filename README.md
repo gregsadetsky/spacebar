@@ -9,7 +9,9 @@ It also lets developers write plugins to support more kinds of files - just by w
 ## Install
 
 ```
-brew tap gregsadetsky/tap && brew install --cask spacebar
+brew tap gregsadetsky/tap
+brew trust gregsadetsky/tap
+brew install --cask spacebar
 ```
 
 > Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).
