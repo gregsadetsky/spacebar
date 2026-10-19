@@ -48,3 +48,18 @@ app, `pluginkit -r`s the old path, sleeps, copies, re-adds, and verifies.
 
 `log show ...` in zsh silently runs the shell builtin and prints nothing
 useful. always `/usr/bin/log`. cost me 15 minutes of false negatives.
+
+## 2026-10-18 WKWebView in the sandboxed extension needs `com.apple.security.network.client`
+
+symptom: every preview timed out; WebKit's GPU, WebContent and Networking
+helpers exited right after launch ("reason=Crash" in the WebKit log, no .ips
+reports). launchd showed `exited due to exit(1), ran for 18ms` for each
+helper. that is WebKit's own entitlement check inside its XPC services: a
+sandboxed client without `com.apple.security.network.client` is refused.
+(an unsandboxed extension is never loaded by macos at all, tested.)
+
+so the brief's "no network entitlement" cannot hold with WKWebView. the
+entitlement is on, and the host enforces offline behaviour instead:
+a WKContentRuleList blocks every http/https/ws/ftp load (subresources too),
+and `decidePolicyFor` cancels non-file navigations. the hello plugin's
+fetch("https://example.com") is logged as blocked; smoke.sh checks for it.

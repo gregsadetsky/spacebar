@@ -36,7 +36,7 @@ PLUGIN_FILES := $(shell find plugins -type f 2>/dev/null)
 ifeq ($(CONFIG),release)
 OPT := -O -whole-module-optimization
 else
-OPT := -Onone -g
+OPT := -Onone -g -DDEBUG
 endif
 
 SWIFTC := swiftc -sdk $(SDK) -target $(TARGET) $(OPT) -parse-as-library -swift-version 5

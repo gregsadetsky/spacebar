@@ -6,9 +6,28 @@
 <body>
   <h1 id="h">hello</h1>
   <p id="p"></p>
+  <p id="net">network: testing…</p>
   <script>
     document.getElementById("h").textContent = "hello " + spacebar.file.name;
     document.getElementById("p").textContent = spacebar.file.size + " bytes, " + spacebar.input + ", theme " + spacebar.theme + ", uti " + spacebar.file.uti;
-    spacebar.done();
+    // offline probe: no-cors fetch resolves (opaque) whenever the network is
+    // reachable, so a rejection here means the host blocked it.
+    var img = new Image();
+    var imgResult = new Promise(function (resolve) {
+      img.onload = function () { resolve("img loaded"); };
+      img.onerror = function () { resolve("img error"); };
+      img.src = "https://www.apple.com/favicon.ico?" + Date.now();
+    });
+    fetch("https://example.com/", { mode: "no-cors" }).then(function (r) {
+      return "fetch resolved type=" + r.type;
+    }, function (e) {
+      return "fetch rejected (" + e + ")";
+    }).then(function (f) {
+      return imgResult.then(function (i) {
+        var reachable = f.indexOf("resolved") >= 0 || i === "img loaded";
+        document.getElementById("net").textContent = reachable ? "network: REACHABLE (bad)" : "network: blocked";
+        spacebar.log("network check: " + (reachable ? "REACHABLE" : "blocked") + "; " + f + "; " + i);
+      });
+    }).finally(function () { spacebar.done(); });
   </script>
 </body></html>

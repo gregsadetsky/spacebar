@@ -82,12 +82,57 @@ final class PreviewWebView: NSView {
         }
     }
 
+    /// blocks every network load (navigations and subresources). plugins are
+    /// offline by contract; the extension only holds the network entitlement
+    /// because WebKit's helper processes refuse to launch without it.
+    private static let offlineRules = """
+    [
+      {"trigger": {"url-filter": "^http://"}, "action": {"type": "block"}},
+      {"trigger": {"url-filter": "^https://"}, "action": {"type": "block"}},
+      {"trigger": {"url-filter": "^ws://"}, "action": {"type": "block"}},
+      {"trigger": {"url-filter": "^wss://"}, "action": {"type": "block"}},
+      {"trigger": {"url-filter": "^ftp://"}, "action": {"type": "block"}}
+    ]
+    """
+
+    private static func offlineRuleList(_ completion: @escaping (WKContentRuleList?) -> Void) {
+        let id = "spacebar-offline-v1"
+        let store = WKContentRuleListStore.default()
+        store?.lookUpContentRuleList(forIdentifier: id) { list, _ in
+            if let list { return completion(list) }
+            store?.compileContentRuleList(forIdentifier: id, encodedContentRuleList: offlineRules) { list, error in
+                if let error { NSLog("spacebar: offline rule list compile failed: \(error)") }
+                completion(list)
+            }
+        }
+    }
+
     private func load(script: String, plugin: InstalledPlugin) {
+        #if DEBUG
+        // debug builds only: lets smoke tests prove the block is the rule list's doing
+        if ProcessInfo.processInfo.environment["SPACEBAR_DEV_ALLOW_NETWORK"] == "1" {
+            onLog?("DEBUG: network allowed via SPACEBAR_DEV_ALLOW_NETWORK")
+            load(script: script, plugin: plugin, rules: nil)
+            return
+        }
+        #endif
+        PreviewWebView.offlineRuleList { [weak self] rules in
+            guard let self, !self.finished else { return }
+            guard let rules else {
+                self.finish(.hostError("could not build offline rule list"), title: "Spacebar host error", message: "Could not build the offline content rule list.")
+                return
+            }
+            self.load(script: script, plugin: plugin, rules: rules)
+        }
+    }
+
+    private func load(script: String, plugin: InstalledPlugin, rules: WKContentRuleList?) {
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .nonPersistent()
         let controller = WKUserContentController()
         controller.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         controller.add(WeakMessageHandler(self), name: Bridge.messageHandlerName)
+        if let rules { controller.add(rules) }
         config.userContentController = controller
         let web = WKWebView(frame: bounds, configuration: config)
         web.autoresizingMask = [.width, .height]

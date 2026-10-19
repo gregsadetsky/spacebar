@@ -6,5 +6,10 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
+	<!-- WebKit's helper processes exit(1) at launch inside a sandboxed client
+	     without this entitlement. plugins are still kept offline by the host:
+	     PreviewWebView cancels every non-file navigation and subresource. -->
+	<key>com.apple.security.network.client</key>
+	<true/>
 </dict>
 </plist>
