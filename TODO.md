@@ -15,3 +15,18 @@
 - universal (arm64 + x86_64) release zip; intel macs can't open the current one
 - developer id signing + notarization (release.sh only), see readme note
 - sqlite: `spacebar.query(sql)` so sort/paging works on the whole table, not the 50 sampled rows
+- `requiresHost` in plugin.json is parsed but never enforced; a plugin needing
+  a newer host should get a clear error view instead of breaking
+- the 3 s plugin timeout vs `maxFileSize`: big.geojson (5.7 MB) renders in
+  ~0.7 s, so a 50 MB geojson will time out before it parses. either lower the
+  geojson cap or let plugins ask for more time
+- bundle id prefix `io.spacebar` is the placeholder from the brief and is now
+  baked into a release; changing it later means users re-enable the extension
+- `.db` is claimed by the sqlite plugin; non-sqlite .db files now get our
+  "not a SQLite database" view instead of apple's generic one. keep or drop
+- never clicked through by hand: plugins tab (install from folder, remove,
+  toggles), dev harness window, dark mode and arrow keys in the real finder
+  panel. all verified through code paths and `--dev`, not the ui
+- web/: not deployed (disco.json is there); og:image url assumes
+  spacebar.greg.technology; no favicon yet
+- finder and the dock may keep the old icon until their cache refreshes
