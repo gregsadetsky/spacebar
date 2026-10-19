@@ -1,0 +1,29 @@
+#!/bin/bash
+# checks every plugins/*/plugin.json: parses, required keys, entry exists,
+# extensions lowercase without dots, no http(s):// strings in html/js/css
+# (plugins are offline; a cdn url is a bug).
+set -euo pipefail
+shopt -s nullglob
+cd "$(dirname "$0")/.."
+fail=0
+for dir in plugins/*/; do
+  id=$(basename "$dir")
+  m="$dir/plugin.json"
+  if [ ! -f "$m" ]; then echo "FAIL $id: no plugin.json"; fail=1; continue; fi
+  if ! jq -e . "$m" >/dev/null 2>&1; then echo "FAIL $id: plugin.json is not valid json"; fail=1; continue; fi
+  for key in id name version matches input; do
+    if [ "$(jq -r "has(\"$key\")" "$m")" != "true" ]; then echo "FAIL $id: missing \"$key\""; fail=1; fi
+  done
+  if [ "$(jq -r .id "$m")" != "$id" ]; then echo "FAIL $id: id \"$(jq -r .id "$m")\" does not match folder name"; fail=1; fi
+  if ! jq -r .version "$m" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then echo "FAIL $id: version is not x.y.z"; fail=1; fi
+  if ! jq -r .input "$m" | grep -Eq '^(text|bytes|json|sqlite)$'; then echo "FAIL $id: input must be text|bytes|json|sqlite"; fail=1; fi
+  entry=$(jq -r '.entry // "index.html"' "$m")
+  if [ ! -f "$dir/$entry" ]; then echo "FAIL $id: entry \"$entry\" does not exist"; fail=1; fi
+  if jq -r '.matches.extensions // [] | .[]' "$m" | grep -Eqv '^[a-z0-9]+$'; then echo "FAIL $id: extensions must be lowercase, no dot"; fail=1; fi
+  if [ "$(jq -r '(.matches.extensions // [] | length) + (.matches.utis // [] | length)' "$m")" = "0" ]; then echo "FAIL $id: matches is empty"; fail=1; fi
+  if grep -rEl 'https?://' "$dir" --include='*.html' --include='*.js' --include='*.css' 2>/dev/null | grep -v '^$'; then
+    echo "FAIL $id: http(s):// url found in the files above (plugins are offline)"; fail=1
+  fi
+  [ $fail = 0 ] && echo "ok   $id"
+done
+exit $fail

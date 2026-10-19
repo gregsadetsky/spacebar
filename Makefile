@@ -85,8 +85,15 @@ build: $(APPEX)/Contents/MacOS/$(EXT_NAME) $(APP)/Contents/MacOS/$(APP_NAME) $(P
 	@echo "built $(APP)"
 
 # --- the rest -----------------------------------------------------------------
+# real XCTest needs xcode; with command line tools only, the same test files
+# run through a tiny XCTest look-alike (Packages/SpacebarKit/Tests/XCTestShim)
 test:
-	cd Packages/SpacebarKit && swift test
+	@if xcode-select -p 2>/dev/null | grep -q "Xcode.app"; then \
+		cd Packages/SpacebarKit && swift test; \
+	else \
+		echo "no xcode: running tests through the XCTest shim"; \
+		cd Packages/SpacebarKit && SPACEBAR_XCTEST_SHIM=1 swift run spacebar-tests; \
+	fi
 	scripts/validate-plugins.sh
 
 samples:

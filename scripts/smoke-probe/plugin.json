@@ -1,6 +1,6 @@
 {
-  "id": "hello",
-  "name": "Hello",
+  "id": "smoke-probe",
+  "name": "Smoke probe",
   "version": "0.0.1",
   "matches": { "extensions": ["geojson", "sqlite", "sqlite3"] },
   "input": "bytes",

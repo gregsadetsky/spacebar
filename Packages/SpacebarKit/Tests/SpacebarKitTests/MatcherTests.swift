@@ -59,7 +59,8 @@ final class MatcherTests: XCTestCase {
     func testIndexScanAndDisabled() throws {
         let tmp = TempDir()
         tmp.plugin("geojson", extensions: ["geojson"])
-        tmp.plugin("broken", extraJSON: ", \"version\": \"nope\"")
+        tmp.write("broken/plugin.json", "{\"id\": \"broken\", \"name\": \"b\", \"version\": \"nope\", \"matches\": {\"extensions\": [\"geojson\"]}, \"input\": \"text\"}")
+        tmp.write("broken/index.html", "<html></html>")
         tmp.plugin("renamed")
         try FileManager.default.moveItem(at: tmp.url.appendingPathComponent("renamed"), to: tmp.url.appendingPathComponent("other-name"))
         tmp.write("not-a-dir.txt", "x")

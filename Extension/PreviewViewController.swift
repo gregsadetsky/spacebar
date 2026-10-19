@@ -29,7 +29,7 @@ final class PreviewViewController: NSViewController, QLPreviewingController {
         preview.autoresizingMask = [.width, .height]
         view.addSubview(preview)
         self.preview = preview
-        preview.onLog = { message in log.debug("[\(plugin.manifest.id, privacy: .public)] \(message, privacy: .public)") }
+        preview.onLog = { message in log.info("[\(plugin.manifest.id, privacy: .public)] \(message, privacy: .public)") }
         preview.onFinish = { outcome in
             let ms = Int(Date().timeIntervalSince(started) * 1000)
             let line = "rendered plugin=\(plugin.manifest.id) ext=\(file.ext) size=\(file.size) elapsed=\(ms)ms outcome=\(outcome.label)"
