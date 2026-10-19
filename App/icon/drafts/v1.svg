@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="background" x1="160" y1="0" x2="864" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8589E9"/>
+      <stop offset="1" stop-color="#585CC0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="512" y1="426" x2="512" y2="676" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E3E8F3"/>
+      <stop offset="0.65" stop-color="#BEC8DF"/>
+      <stop offset="1" stop-color="#A2AECC"/>
+    </linearGradient>
+    <linearGradient id="face" x1="512" y1="354" x2="512" y2="594" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF0FA"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-40%" width="150%" height="200%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="30" stdDeviation="22" flood-color="#24245C" flood-opacity="0.36"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="230" fill="url(#background)"/>
+  <rect x="2" y="2" width="1020" height="1020" rx="228" fill="none" stroke="#FFFFFF" stroke-opacity="0.13" stroke-width="4"/>
+  <path d="M226 368 H798 Q824 368 837 399 L864 478 V620 Q864 670 812 670 H212 Q160 670 160 620 V478 L187 399 Q200 368 226 368Z" fill="url(#edge)" filter="url(#shadow)"/>
+  <path d="M226 356 H798 Q825 356 838 390 L862 493 Q869 523 849 545 Q837 558 809 558 H215 Q187 558 175 545 Q155 523 162 493 L186 390 Q199 356 226 356Z" fill="url(#face)" stroke="#FFFFFF" stroke-width="4"/>
+  <path d="M197 392 Q204 375 228 375 H796 Q820 375 827 392" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M183 578 Q194 594 220 594 H804 Q830 594 841 578" fill="none" stroke="#F7FAFF" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round"/>
+  <path d="M436 455 V479 H588 V455" fill="none" stroke="#9CAAC4" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
