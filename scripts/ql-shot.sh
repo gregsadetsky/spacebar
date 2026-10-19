@@ -16,6 +16,6 @@ for w in list where (w["kCGWindowOwnerName"] as? String) == "qlmanage" {
 SWIFT
 )
 if [ -z "$WID" ]; then echo "no qlmanage window found"; kill $QL 2>/dev/null || true; exit 1; fi
-screencapture -x -l "$WID" "$OUT"
+screencapture -x -o -l "$WID" "$OUT"
 kill $QL 2>/dev/null || true
 echo "wrote $OUT (window $WID)"
