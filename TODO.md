@@ -151,10 +151,15 @@ ableton sets.
      of npy. easy and safe.
    - `.h5`: hdf5 group/dataset tree; needs a vendored hdf5 reader (jsfive
      exists) or a native one. medium.
-5. **csv/tsv** (1280 here): real columns, sortable like the sqlite viewer.
-   apple previews csv as text today; whether a third party can take
-   `public.comma-separated-values-text` is the same test as plist.
-6. **srt/vtt** subtitles (1000+ here): timestamps + text, trivial, text input.
+5. **srt/vtt** subtitles (1000+ here): timestamps + text, trivial, text
+   input. show cue number, start → end, text; maybe total duration and cue
+   count at the top. both utis exist on macos? check with spacebar-cli
+   match; claim them in a host release if needed.
+6. **tsv** (csv is covered by macos already): real columns, sortable like
+   the sqlite viewer. vendor papaparse (handles tsv/csv, quoting, and
+   delimiter detection) or hand-roll a tab splitter. apple previews tsv as
+   plain text; whether a third party can take
+   `public.tab-separated-values-text` is the same test as plist.
 7. **stl** (1074, apple already previews 3d), **step/dxf**: skip for now.
 8. **.env / .lock / .log**: text with light highlighting; cheap, but
    .env is a dotfile with no extension in finder's eyes (uti lookup by
