@@ -11,6 +11,8 @@ cask "spacebar" do
 
   app "Spacebar.app"
 
+  uninstall quit: "io.spacebar.app"
+
   zap trash: [
     "~/Library/Containers/io.spacebar.app.QuickLook",
     "~/Library/Containers/io.spacebar.app",
