@@ -4,6 +4,7 @@ import SpacebarKit
 @main
 struct SpacebarApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject private var model = AppModel()
 
     init() {
         do {
@@ -17,16 +18,38 @@ struct SpacebarApp: App {
     }
 
     var body: some Scene {
-        WindowGroup("Spacebar") {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Spacebar scaffold")
-                Text(Paths.pluginsDir.path).font(.caption).textSelection(.enabled)
+        Window("Spacebar", id: "main") {
+            TabView {
+                StatusView().tabItem { Text("Status") }
+                PluginsView().tabItem { Text("Plugins") }
             }
-            .padding(40)
+            .frame(minWidth: 640, minHeight: 380)
+            .environmentObject(model)
+            .onAppear { model.refresh() }
+        }
+        .defaultSize(width: 720, height: 440)
+
+        Window("Dev Harness", id: "dev") {
+            DevWindow().environmentObject(model)
+        }
+        .defaultSize(width: 1000, height: 640)
+        .commands {
+            CommandGroup(after: .windowArrangement) {
+                OpenDevWindowButton()
+            }
         }
     }
 }
 
+struct OpenDevWindowButton: View {
+    @Environment(\.openWindow) private var openWindow
+    var body: some View {
+        Button("Dev Harness") { openWindow(id: "dev") }.keyboardShortcut("d", modifiers: [.command, .shift])
+    }
+}
+
+/// `Spacebar --dev <file> [--plugin id] [--snapshot out.png]`: headless-ish
+/// render used by scripts/smoke.sh and for screenshots without finder
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var devWindow: NSWindow?
 
@@ -51,7 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentView?.addSubview(preview)
         preview.onLog = { NSLog("spacebar dev [\(plugin.manifest.id)] \($0)") }
         preview.onFinish = { outcome in
-            NSLog("spacebar dev: outcome=\(outcome.label)")
+            NSLog("spacebar dev: plugin=\(plugin.manifest.id) outcome=\(outcome.label)")
             guard let snapshot else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 guard let web = preview.webView, outcome.isSuccess else {

@@ -70,3 +70,12 @@ public struct PluginIndex: Sendable {
         Matcher.pick(from: plugins, ext: ext, uti: uti)
     }
 }
+
+extension PluginIndex {
+    /// flips one id in disabled.json
+    public static func setEnabled(_ id: String, _ enabled: Bool, disabledFile: URL) throws {
+        var ids = readDisabled(from: disabledFile)
+        if enabled { ids.remove(id) } else { ids.insert(id) }
+        try writeDisabled(ids, to: disabledFile)
+    }
+}
