@@ -37,7 +37,7 @@ In the next release (or a local build):
 - `.md` `.markdown` `.mdown` `.mkd`: rendered markdown, highlighted code, math, contents and source view
 - `.zip` `.tar` `.tar.gz` `.tgz` `.tar.bz2` `.tar.xz` `.7z` `.rar`: browse folders and view entry sizes and dates
 - `.epub`: cover, author, contents and a readable excerpt of up to 12 sections
-- `.srt` `.vtt`: subtitle cues with timestamps, search and transcript view
+- `.srt` `.vtt`: subtitle cues with timestamps and duration
 
 ## Update
 

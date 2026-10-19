@@ -41,7 +41,7 @@ self-contained after building; installing it never needs another plugin.
   labeled. See PLUGINS.md for the native size/time limits.
 - `subtitles-model.mjs` parses SRT and WebVTT, including cue IDs, settings,
   speaker tags, multiline text and NOTE/STYLE/REGION blocks. The viewer adds
-  search, transcript view, duration and 200-cue paging. It supports UTF-8 and
+  timestamps, duration and 200-cue paging. It supports UTF-8 and
   BOM-marked UTF-16 through native text input. Limits: 10 MiB, 30,000 cues and
   20,000 characters per cue; malformed and truncated input is labeled.
 

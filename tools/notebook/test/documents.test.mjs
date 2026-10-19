@@ -22,7 +22,6 @@ async function view(t, id, data) {
   });
   return { w, d, outcome };
 }
-function search(w, d, value) { const node = d.querySelector('input[type=search]'); node.value = value; node.dispatchEvent(new w.Event('input')); }
 
 test('Markdown renders metadata, math, code and tables, with source and contents controls', async t => {
   const { w, d, outcome } = await view(t, 'markdown', '---\ntitle: Example\n---\n# Hello\n\n[Jump](#Results)\n\n$E=mc^2$\n\n## Results\n\n```python\nprint(42)\n```\n\n| A | B |\n|---|---|\n| 1 | 2 |');
@@ -78,15 +77,14 @@ test('Subtitle parser handles WebVTT voices, settings, comments and invalid time
   assert.equal(parseSubtitles('WEBVTT\n').cues.length, 0);
 });
 
-test('Subtitle search, transcript mode and paging preserve dialogue while stripping scripts', async t => {
+test('Subtitle paging preserves timestamps and dialogue while stripping scripts', async t => {
   const source = Array.from({ length: 220 }, (_, i) => `${i + 1}\n00:00:01,000 --> 00:00:02,000\n${i === 210 ? '<i>Unique &amp; special</i>' : 'Hello'}<script>window.attacked=1</script>`).join('\n\n');
   const { w, d, outcome } = await view(t, 'subtitles', source);
   assert.equal(outcome, 'done'); assert.equal(d.querySelectorAll('.cue').length, 200);
   d.querySelector('.paging').click(); assert.equal(d.querySelectorAll('.cue').length, 220);
-  search(w, d, 'unique & special'); assert.equal(d.querySelectorAll('.cue').length, 1);
-  assert.equal(d.querySelector('.cue-text').textContent, 'Unique & special');
-  [...d.querySelectorAll('#actions button')].find(b => b.textContent === 'Transcript').click();
-  assert.ok(d.querySelector('.cues.transcript')); assert.equal(w.attacked, undefined);
+  assert.equal(d.querySelectorAll('.cue-text')[210].textContent, 'Unique & special');
+  assert.match(d.querySelectorAll('.cue-time')[210].textContent, /00:00:01.000.*00:00:02.000/);
+  assert.equal(w.attacked, undefined);
   assert.equal(d.querySelectorAll('.cue script').length, 0);
 });
 

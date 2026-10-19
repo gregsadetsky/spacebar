@@ -175,7 +175,7 @@ ableton sets.
    - `.h5`: hdf5 group/dataset tree; needs a vendored hdf5 reader (jsfive
      exists) or a native one. medium.
 5. **srt/vtt: implemented locally, release + cask bump pending.** Cue
-   timestamps, count, duration, search, transcript view and paging. Supports
+   timestamps, count, duration and paging. Supports
    UTF-8 and BOM-marked UTF-16; skips malformed cues with a visible count.
    Claims the system and known subtitle-app UTIs, including MacWhisper's
    `com.goodsnooze.srt` on this Mac. Real Finder routing verified.
@@ -203,8 +203,8 @@ implemented, installed locally and waiting for a release + cask bump.
 Markdown, ZIP/TAR/TAR.GZ/7z/RAR, EPUB, SRT, VTT and UTF-16 SRT (178–275 ms),
 plus the expected invalid-file errors. Native WebKit interaction checks
 covered Markdown source/contents/math, archive folders/breadcrumbs, decoded EPUB
-covers and illustrations, chapter navigation, subtitle paging/search/
-transcript, dark mode and hostile content sanitization. Samples are generated
+covers and illustrations, chapter navigation, subtitle timestamps and
+paging, dark mode and hostile content sanitization. Samples are generated
 by `samples/make_documents.py`; limits are documented in PLUGINS.md.
 
 ## plugins with a build step (typescript, vite)
