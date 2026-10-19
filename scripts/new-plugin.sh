@@ -8,13 +8,21 @@ set -euo pipefail
 id="${1:?id}"; ext="${2:?extension}"; input="${3:-text}"
 dir="plugins/$id"
 [ -e "$dir" ] && { echo "$dir exists"; exit 1; }
+# the host only previews utis listed in Extension/Info.plist. extensions macos
+# doesn't know are declared by the app as io.spacebar.<ext>; system types
+# (gpx, geojson, ...) keep their own uti. match on the uti when we know it.
+utis=""
+if grep -q "<string>io.spacebar.$ext</string>" Extension/Info.plist; then utis=", \"utis\": [\"io.spacebar.$ext\"]"
+elif ! grep -q "$ext" Extension/Info.plist App/Info.plist; then
+  echo "warning: .$ext is not in Extension/Info.plist (QLSupportedContentTypes); the extension will never be asked to preview it"
+fi
 mkdir -p "$dir"
 cat > "$dir/plugin.json" <<JSON
 {
   "id": "$id",
   "name": "$id",
   "version": "0.1.0",
-  "matches": { "extensions": ["$ext"] },
+  "matches": { "extensions": ["$ext"]$utis },
   "input": "$input",
   "maxFileSize": 10485760,
   "entry": "index.html"
@@ -62,4 +70,4 @@ JS
 echo "created $dir"
 echo "try it:   build/Spacebar.app/Contents/MacOS/Spacebar --dev some.$ext --plugin $id"
 echo "or:       open the app, Window > Dev Harness, pick $id and a file"
-echo "ship it:  make install   (bundled plugins are copied on every launch)"
+echo "ship it:  make install   (opens the app once; that launch copies bundled plugins into place)"

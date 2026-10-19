@@ -48,7 +48,7 @@ struct OpenDevWindowButton: View {
     }
 }
 
-/// `Spacebar --dev <file> [--plugin id] [--snapshot out.png]`: headless-ish
+/// `Spacebar --dev <file> [--plugin id] [--snapshot out.png] [--theme dark|light]`: headless-ish
 /// render used by scripts/smoke.sh and for screenshots without finder
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var devWindow: NSWindow?
@@ -66,6 +66,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         guard let plugin else { NSLog("spacebar dev: no plugin for \(file.name)"); NSApp.terminate(nil); return }
         let snapshot = args.firstIndex(of: "--snapshot").flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil }
+        if let t = args.firstIndex(of: "--theme"), t + 1 < args.count {
+            NSApp.appearance = NSAppearance(named: args[t + 1] == "dark" ? .darkAqua : .aqua)
+        }
 
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 900, height: 600), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
         window.title = "dev: \(plugin.manifest.id) · \(file.name)"
