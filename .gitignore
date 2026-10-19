@@ -1,0 +1,12 @@
+.DS_Store
+build/
+dist/
+.build/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+samples/*.geojson
+samples/*.sqlite3
+samples/*.sqlite3-*
+samples/*.json
+.swiftpm/
