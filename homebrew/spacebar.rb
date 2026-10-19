@@ -1,8 +1,8 @@
 # lives in a separate homebrew-tap repo when published:
 #   brew tap gregsadetsky/tap && brew install --cask spacebar
 cask "spacebar" do
-  version "0.2.2"
-  sha256 "aee72226307b36327f5329b1a7dd8e4264239fcd5918d04a40011a4d35a5ebc8"
+  version "0.2.3"
+  sha256 "c702ef445e912929f42bf5f664266608ab1a731a4151703ff2ded58582368d74"
 
   url "https://github.com/gregsadetsky/spacebar/releases/download/v#{version}/Spacebar-#{version}.zip"
   name "Spacebar"
