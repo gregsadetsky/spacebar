@@ -43,8 +43,6 @@ brew update
 brew upgrade --cask spacebar
 ```
 
-(the app opens once after the upgrade; that launch installs the new bundled plugins)
-
 ## Uninstall
 
 ```

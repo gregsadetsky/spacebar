@@ -18,10 +18,12 @@ cask "spacebar" do
     "~/Library/Containers/io.spacebar.app",
   ]
 
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{appdir}/Spacebar.app"]
-    system_command "/usr/bin/open", args: ["-a", "#{appdir}/Spacebar.app"]
-    system_command "/usr/bin/pluginkit", args: ["-e", "use", "-i", "io.spacebar.app.QuickLook"], must_succeed: false
+  # steps run in homebrew's sandbox: launching the app from here is refused by
+  # launch services, so the extension copies its bundled plugins itself on first use.
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Spacebar.app"],
+                          writable_paths: ["Spacebar.app"], writable_base: :appdir, must_succeed: false
+    run "/usr/bin/pluginkit", args: ["-e", "use", "-i", "io.spacebar.app.QuickLook"], must_succeed: false
   end
 
   caveats <<~EOS

@@ -44,7 +44,9 @@ struct StatusView: View {
             }
             Section {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Seeing a stale or wrong preview after changing or installing a plugin? Finder caches previews. The button below restarts the Quick Look server and clears that cache; the next space press renders fresh.")
+                    Text("Seeing a stale or wrong preview after changing or installing a plugin? Finder caches previews.")
+                        .foregroundStyle(.secondary)
+                    Text("The button below restarts the Quick Look server and clears that cache; the next space press renders fresh.")
                         .foregroundStyle(.secondary)
                     Button("Reset Quick Look") { model.resetQuickLook() }
                 }

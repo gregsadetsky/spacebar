@@ -9,7 +9,8 @@ struct SpacebarApp: App {
     init() {
         do {
             try Paths.ensureDirectories()
-            let bundled = Bundle.main.resourceURL!.appendingPathComponent("Plugins", isDirectory: true)
+            let bundled = Bundle.main.builtInPlugInsURL!
+                .appendingPathComponent("SpacebarQuickLook.appex/Contents/Resources/Plugins", isDirectory: true)
             let synced = try PluginInstaller.syncBundled(from: bundled, to: Paths.pluginsDir)
             NSLog("spacebar: synced bundled plugins \(synced)")
         } catch {

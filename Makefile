@@ -8,7 +8,7 @@
 #   make release   -> dist/Spacebar-<version>.zip + sha256
 #   make clean
 
-VERSION      ?= 0.2.1
+VERSION      ?= 0.2.2
 BUILD_NUMBER ?= $(shell git rev-list --count HEAD 2>/dev/null || echo 1)
 CONFIG       ?= debug
 ARCH         ?= $(shell uname -m)
@@ -78,8 +78,10 @@ $(APP)/Contents/MacOS/$(APP_NAME): $(APP_SRC) $(KIT_LIB) App/Info.plist App/App.
 
 # --- bundle assembly + signing -----------------------------------------------
 build: $(APPEX)/Contents/MacOS/$(EXT_NAME) $(APP)/Contents/MacOS/$(APP_NAME) $(PLUGIN_FILES)
-	rm -rf $(APP)/Contents/Resources/Plugins
-	@if [ -d plugins ]; then cp -R plugins $(APP)/Contents/Resources/Plugins; fi
+	rm -rf $(APP)/Contents/Resources/Plugins $(APPEX)/Contents/Resources/Plugins
+	@# plugins ship inside the extension: a sandboxed appex can read its own bundle,
+	@# not the parent app's resources. the app syncs from the same place.
+	@if [ -d plugins ]; then cp -R plugins $(APPEX)/Contents/Resources/Plugins; fi
 	cp App/icon/AppIcon.icns $(APP)/Contents/Resources/AppIcon.icns
 	codesign --force --sign - --entitlements Extension/Extension.entitlements --timestamp=none $(APPEX)
 	codesign --force --sign - --entitlements App/App.entitlements --timestamp=none $(APP)

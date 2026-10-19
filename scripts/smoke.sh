@@ -47,6 +47,11 @@ rm -rf "$PLUGINS/smoke-probe"
 [ "$on" = "network check: blocked" ] && pass "rules on: $on" || bad "rules on: got '$on'"
 [ "$off" = "network check: REACHABLE" ] && pass "rules off: $off (debug env, proves the block is ours)" || bad "rules off: got '$off' (no network on this machine?)"
 
+echo "== fresh container: the extension copies bundled plugins itself"
+rm -rf "$PLUGINS"
+expect samples/cities.geojson  'plugin=geojson .* outcome=done'
+[ -d "$PLUGINS/sqlite" ] && pass "plugins restored into the container by the extension" || bad "container has no plugins after a preview"
+
 echo "== samples through the extension"
 expect samples/cities.geojson  'plugin=geojson .* outcome=done'
 expect samples/shapes.geojson  'plugin=geojson .* outcome=done'

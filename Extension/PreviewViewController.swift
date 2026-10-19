@@ -12,8 +12,25 @@ final class PreviewViewController: NSViewController, QLPreviewingController {
         view = NSView(frame: NSRect(x: 0, y: 0, width: 800, height: 600))
     }
 
+    /// the app copies bundled plugins into the container on launch, but the
+    /// app may never have been launched (brew installs can't open it). so the
+    /// extension does the same copy from its own bundle when needed. the
+    /// plugins ship inside the appex because a sandboxed extension cannot read
+    /// the parent app's resources.
+    private static let bundledSync: Void = {
+        guard let bundled = Bundle.main.resourceURL?.appendingPathComponent("Plugins", isDirectory: true) else { return }
+        do {
+            try Paths.ensureDirectories()
+            let synced = try PluginInstaller.syncBundled(from: bundled, to: Paths.pluginsDir)
+            if !synced.isEmpty { log.info("synced bundled plugins from the extension bundle: \(synced.joined(separator: ","), privacy: .public)") }
+        } catch {
+            log.error("bundled plugin sync failed: \(String(describing: error), privacy: .public)")
+        }
+    }()
+
     func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
         let started = Date()
+        _ = PreviewViewController.bundledSync
         let file = FileInfo(url: url)
         let index = PluginIndex.scanDefault()
         for w in index.warnings { log.warning("\(w, privacy: .public)") }
