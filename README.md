@@ -12,11 +12,11 @@ It also lets developers write plugins to support more kinds of files - just by w
 brew tap gregsadetsky/tap && brew install --cask spacebar
 ```
 
-<sub>Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).</sub>
-
-<sub>For now, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway</sub>
-
-<sub>... or, run `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`</sub>
+> Note: the app is not currently signed with an Apple developer id (I'll do it after I get 10ish stars on GitHub!).
+>
+> For now, either go to System Settings → Privacy & Security → (find the app at the bottom of the window, then click) Open Anyway
+>
+> ... or, run `xattr -dr com.apple.quarantine ~/Applications/Spacebar.app`
 
 If previews don't show, go to: *System Settings → General → Login Items & Extensions → Quick Look* and make sure that Spacebar is enabled
 
