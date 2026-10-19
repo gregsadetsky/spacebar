@@ -2,8 +2,19 @@
   "id": "smoke-probe",
   "name": "Smoke probe",
   "version": "0.0.1",
-  "matches": { "extensions": ["geojson", "sqlite", "sqlite3"] },
+  "matches": {
+    "extensions": [
+      "geojson",
+      "sqlite",
+      "sqlite3"
+    ],
+    "utis": [
+      "public.geojson",
+      "io.spacebar.sqlite"
+    ]
+  },
   "input": "bytes",
   "maxFileSize": 1048576,
-  "entry": "index.html"
+  "entry": "index.html",
+  "priority": 100
 }

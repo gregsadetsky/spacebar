@@ -1,0 +1,27 @@
+name: ci
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: sw_vers && xcodebuild -version
+      - name: test (real XCTest on the runner)
+        run: make test
+      - run: make build
+      - run: make samples
+      - name: smoke (non-blocking on runners, extension registration is flaky there)
+        run: SMOKE_BLOCKING=0 make smoke
+      - name: release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: VERSION="${GITHUB_REF_NAME#v}" scripts/release.sh
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            dist/*.zip
+            dist/*.sha256
