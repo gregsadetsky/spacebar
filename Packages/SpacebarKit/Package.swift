@@ -10,9 +10,11 @@ let useShim = ProcessInfo.processInfo.environment["SPACEBAR_XCTEST_SHIM"] == "1"
 
 var targets: [Target] = [
     .target(name: "SpacebarKit", linkerSettings: [.linkedLibrary("sqlite3")]),
+    .executableTarget(name: "spacebar-cli", dependencies: ["SpacebarKit"]),
 ]
 var products: [Product] = [
     .library(name: "SpacebarKit", targets: ["SpacebarKit"]),
+    .executable(name: "spacebar-cli", targets: ["spacebar-cli"]),
 ]
 
 if useShim {

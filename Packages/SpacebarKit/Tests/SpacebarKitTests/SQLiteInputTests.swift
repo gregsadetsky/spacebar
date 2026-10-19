@@ -19,8 +19,8 @@ final class SQLiteInputTests: XCTestCase {
     CREATE TABLE people (id INTEGER PRIMARY KEY, name TEXT NOT NULL, score REAL, photo BLOB, note TEXT DEFAULT 'none');
     INSERT INTO people VALUES (1, 'ann', 1.5, x'0102030405', NULL);
     INSERT INTO people VALUES (2, 'bob', NULL, NULL, 'hi');
-    CREATE TABLE "weird ""name""" (x);
-    INSERT INTO "weird ""name""" VALUES (42);
+    CREATE TABLE "weird ""name\"\"\" (x);
+    INSERT INTO "weird ""name\"\"\" VALUES (42);
     CREATE INDEX people_name ON people(name);
     CREATE VIEW top AS SELECT name FROM people WHERE score > 1;
     PRAGMA user_version = 7;
@@ -76,7 +76,7 @@ final class SQLiteInputTests: XCTestCase {
         let tmp = TempDir()
         let url = makeDB(tmp, sql: fixture)
         guard case .sqlite(let s) = try InputLoader.load(kind: .sqlite, url: url, manifest: manifest("s", input: .sqlite)) else { return XCTFail() }
-        XCTAssertEqual((s["tables"] as? [[Any]])?.count, 2)
+        XCTAssertEqual((s["tables"] as? [[String: Any]])?.count, 2)
     }
 
     func testSampleLimitAndCountBudget() throws {

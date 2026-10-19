@@ -1,0 +1,13 @@
+{
+  "id": "sqlite",
+  "name": "SQLite",
+  "version": "0.1.0",
+  "matches": {
+    "extensions": ["sqlite", "sqlite3", "db"],
+    "utis": ["io.spacebar.sqlite"]
+  },
+  "input": "sqlite",
+  "maxFileSize": 2147483648,
+  "entry": "index.html",
+  "requiresHost": "0.1.0"
+}

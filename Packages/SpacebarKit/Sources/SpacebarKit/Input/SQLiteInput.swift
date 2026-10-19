@@ -45,7 +45,7 @@ public enum SQLiteInput: InputProvider {
                 t["columns"] = try db.rows("PRAGMA table_info(\(quote(name)))").map { c -> [String: Any] in
                     ["name": c[1] as? String ?? "", "type": c[2] as? String ?? "",
                      "notnull": (c[3] as? Int ?? 0) != 0, "pk": (c[5] as? Int ?? 0) != 0,
-                     "default": c[4] ?? NSNull()]
+                     "default": c[4]]
                 }
                 let count = db.count(table: name, budget: countBudget)
                 t["rowCount"] = count.map { $0 } ?? NSNull()
@@ -119,18 +119,32 @@ public enum SQLiteInput: InputProvider {
         func scalarInt(_ sql: String) throws -> Int { (try rows(sql).first?.first as? Int) ?? 0 }
         func scalarText(_ sql: String) throws -> String { (try rows(sql).first?.first as? String) ?? "" }
 
-        /// SELECT COUNT(*) with a time budget enforced through the progress
-        /// handler; nil when interrupted
+        /// SELECT COUNT(*) with a time budget. two mechanisms: the progress
+        /// handler (checked every opcode, deterministic, but can't stop a long
+        /// OP_Count mid-walk) and a timer that calls sqlite3_interrupt from
+        /// another thread (which can). nil when interrupted.
         func count(table: String, budget: TimeInterval) -> Int? {
             let deadline = Date().addingTimeInterval(budget)
             let box = Unmanaged.passRetained(DeadlineBox(deadline))
             defer { box.release() }
-            sqlite3_progress_handler(db, 500, { ctx in
+            sqlite3_progress_handler(db, 1, { ctx in
                 let box = Unmanaged<DeadlineBox>.fromOpaque(ctx!).takeUnretainedValue()
                 return Date() > box.deadline ? 1 : 0
             }, box.toOpaque())
             defer { sqlite3_progress_handler(db, 0, nil, nil) }
-            return try? scalarInt("SELECT COUNT(*) FROM \(SQLiteInput.quote(table))")
+
+            let guardLock = NSLock()
+            var statementDone = false
+            let db = self.db
+            let interrupt = DispatchWorkItem {
+                guardLock.lock(); defer { guardLock.unlock() }
+                if !statementDone { sqlite3_interrupt(db) }
+            }
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + max(0, budget), execute: interrupt)
+            let result = try? scalarInt("SELECT COUNT(*) FROM \(SQLiteInput.quote(table))")
+            guardLock.lock(); statementDone = true; guardLock.unlock()
+            interrupt.cancel()
+            return result
         }
 
         /// first `limit` rows as json-friendly values; returns the rows and an
