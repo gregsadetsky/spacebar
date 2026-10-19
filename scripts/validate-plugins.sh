@@ -21,8 +21,11 @@ for dir in plugins/*/; do
   if [ ! -f "$dir/$entry" ]; then echo "FAIL $id: entry \"$entry\" does not exist"; fail=1; fi
   if jq -r '.matches.extensions // [] | .[]' "$m" | grep -Eqv '^[a-z0-9]+$'; then echo "FAIL $id: extensions must be lowercase, no dot"; fail=1; fi
   if [ "$(jq -r '(.matches.extensions // [] | length) + (.matches.utis // [] | length)' "$m")" = "0" ]; then echo "FAIL $id: matches is empty"; fail=1; fi
-  if grep -rEl 'https?://' "$dir" --include='*.html' --include='*.js' --include='*.css' 2>/dev/null | grep -v '^$'; then
-    echo "FAIL $id: http(s):// url found in the files above (plugins are offline)"; fail=1
+  # urls in code are a bug (plugins are offline); urls in // or /* comments are fine
+  hits=$(find "$dir" -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' \) -exec grep -HnE 'https?://' {} + 2>/dev/null \
+         | grep -vE '^[^:]+:[0-9]+:\s*(//|/\*|\*|<!--)' | grep -vE 'https?://www\.w3\.org/' || true)
+  if [ -n "$hits" ]; then
+    echo "$hits"; echo "FAIL $id: http(s):// url found in code above (plugins are offline)"; fail=1
   fi
   [ $fail = 0 ] && echo "ok   $id"
 done
