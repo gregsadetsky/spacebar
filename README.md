@@ -1,4 +1,4 @@
-# Spacebar
+<h1><img src="web/icon.png" width="48" align="absmiddle" alt=""> Spacebar</h1>
 
 Spacebar lets you preview lots of different kinds of files in the macOS Finder, like .sqlite3 and .geojson
 
