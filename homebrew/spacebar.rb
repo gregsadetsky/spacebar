@@ -25,6 +25,7 @@ cask "spacebar" do
   caveats <<~EOS
     Unsigned build. If previews don't show up, enable the extension:
       System Settings → General → Login Items & Extensions → Quick Look → Spacebar
-    Then press space on a .geojson or .sqlite3 file.
+    Then press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file.
+    More plugins can be added; see https://github.com/gregsadetsky/spacebar
   EOS
 end
