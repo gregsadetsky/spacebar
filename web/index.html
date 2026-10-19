@@ -12,7 +12,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <style>
     body { max-width: 760px; margin: 40px auto; padding: 0 16px; font: 16px/1.5 -apple-system, system-ui, sans-serif; }
-    img { max-width: 100%; border: 1px solid #ccc; }
+    video, img { max-width: 100%; border: 1px solid #ccc; }
     code, pre { font: 14px/1.5 ui-monospace, Menlo, monospace; }
     pre { background: #f4f4f4; padding: 10px; overflow: auto; }
     @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } img { border-color: #444; } }
@@ -21,7 +21,7 @@
 <body>
   <h1>Spacebar</h1>
   <p>Quick Look previews from plugins. Press space on a file in Finder; a folder of HTML and JS renders it.</p>
-  <img src="preview.gif" alt="Quick Look panel showing a GeoJSON map, then a SQLite table browser" width="820">
+  <video src="preview.mp4" autoplay loop muted playsinline poster="og.png" width="820" aria-label="Finder window; space opens a GeoJSON map, then a SQLite table browser"></video>
   <ul>
     <li>A plugin is a folder: <code>plugin.json</code>, <code>index.html</code>, your JS. No build step.</li>
     <li>The host hands the plugin the file (text, bytes, JSON, or a native SQLite summary) and shows the result.</li>
