@@ -12,3 +12,4 @@ samples/*.sqlite3
 samples/*.sqlite3-*
 samples/*.json
 .swiftpm/
+.claude-logs/

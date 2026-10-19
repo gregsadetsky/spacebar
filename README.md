@@ -26,9 +26,10 @@ If previews don't show, go to: *System Settings → General → Login Items & Ex
 - Spacebar ships with .geojson and .sqlite3 out of the box
 - to write your own plugin, run `scripts/new-plugin.sh`
 
-## Source Code
+## How to develop
 
-command line tools or xcode. `make install`, `make test`, `make smoke`,
-`make release`. [NOTES.md](NOTES.md) is the list of macos surprises.
+(you don't need to do this to write plugins)
 
-mit.
+`make install`, `make test`, `make smoke`, `make release`
+
+MIT
