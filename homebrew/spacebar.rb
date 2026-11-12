@@ -1,8 +1,8 @@
 # lives in a separate homebrew-tap repo when published:
 #   brew tap gregsadetsky/tap && brew install --cask spacebar
 cask "spacebar" do
-  version "0.2.3"
-  sha256 "c702ef445e912929f42bf5f664266608ab1a731a4151703ff2ded58582368d74"
+  version "0.3.0"
+  sha256 "6de77992d153db462a92b269b44dcaabb4891d4470da3512fe205d540e33d402"
 
   url "https://github.com/gregsadetsky/spacebar/releases/download/v#{version}/Spacebar-#{version}.zip"
   name "Spacebar"
@@ -29,7 +29,7 @@ cask "spacebar" do
   caveats <<~EOS
     One more step: open Spacebar once so macOS registers the Quick Look extension:
       open -a Spacebar
-    Then press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub or .srt file in Finder.
+    Then press space on a .sqlite3, .geojson, .plist, .md, .ipynb, .zip, .epub, .srt or .webm file in Finder.
     Unsigned build. If previews still don't show, enable the extension:
       System Settings → General → Login Items & Extensions → Quick Look → Spacebar
     More plugins: https://github.com/gregsadetsky/spacebar
