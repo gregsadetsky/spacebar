@@ -8,7 +8,7 @@
 #   make release   -> dist/Spacebar-<version>.zip + sha256
 #   make clean
 
-VERSION      ?= 0.2.3
+VERSION      ?= 0.3.0
 BUILD_NUMBER ?= $(shell git rev-list --count HEAD 2>/dev/null || echo 1)
 CONFIG       ?= debug
 ARCH         ?= $(shell uname -m)
@@ -31,7 +31,7 @@ KIT_LIB      := $(KIT_DIR)/libSpacebarKit.a
 KIT_SRC      := $(shell find Packages/SpacebarKit/Sources/SpacebarKit -name '*.swift')
 ARCHIVE_HEADERS := $(wildcard Packages/SpacebarKit/Sources/CArchive/*)
 EXT_SRC      := $(shell find Extension -name '*.swift')
-APP_SRC      := $(shell find App -name '*.swift') Extension/PreviewWebView.swift
+APP_SRC      := $(shell find App -name '*.swift') Extension/PreviewWebView.swift Extension/FileStreamHandler.swift
 PLUGIN_FILES := $(shell find plugins -type f 2>/dev/null)
 
 ifeq ($(CONFIG),release)

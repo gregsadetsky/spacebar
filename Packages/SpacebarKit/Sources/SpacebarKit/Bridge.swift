@@ -17,6 +17,7 @@ public enum Bridge {
         case .json(let obj), .plist(let obj): data = "JSON.parse(\(try jsLiteral(jsLiteral(obj))))"
         case .sqlite(let obj): data = try jsLiteral(obj)
         case .archive(let obj), .epub(let obj): data = "JSON.parse(\(try jsLiteral(jsLiteral(obj))))"
+        case .stream(let url): data = try jsLiteral(url.absoluteString)
         }
         return """
         (function () {
@@ -59,7 +60,7 @@ public enum Bridge {
     /// expression that is safe to paste into a script: `</` and the U+2028 /
     /// U+2029 line terminators are escaped.
     public static func jsLiteral(_ value: Any) throws -> String {
-        let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed, .sortedKeys])
+        let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed, .sortedKeys, .withoutEscapingSlashes])
         var s = String(decoding: data, as: UTF8.self)
         s = s.replacingOccurrences(of: "</", with: "<\\/")
         s = s.replacingOccurrences(of: "\u{2028}", with: "\\u2028")

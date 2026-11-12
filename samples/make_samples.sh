@@ -106,6 +106,11 @@ if [ "${HUGE:-0}" = "1" ]; then
   echo "sqlite: huge ($(du -h huge.sqlite3 | cut -f1))"
 fi
 
+# video fixtures are committed (ffmpeg is not a build dependency): small
+# testsrc clips, vp9+opus and vp8+vorbis, plus a text file with a .webm name
+cp fixtures/clip-vp9.webm fixtures/clip-vp8.webm fixtures/notavideo.webm .
+echo "video: clip-vp9, clip-vp8, notavideo"
+
 # payload dump for the browser harness, when the cli has been built
 CLI="../Packages/SpacebarKit/.build/debug/spacebar-cli"
 if [ -x "$CLI" ]; then "$CLI" dump library.sqlite3 > library.sqlite3.json && echo "harness: library.sqlite3.json"; fi

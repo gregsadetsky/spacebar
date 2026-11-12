@@ -67,9 +67,12 @@ final class PreviewWebView: NSView {
         effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? .dark : .light
     }
 
+    private var currentFile: FileInfo?
+
     func render(file: FileInfo, plugin: InstalledPlugin) {
         reset()
         pluginName = plugin.manifest.name
+        currentFile = file
         do {
             try InputLoader.checkSize(file, manifest: plugin.manifest)
             let payload = try InputLoader.load(kind: plugin.manifest.input, url: file.url, manifest: plugin.manifest)
@@ -129,6 +132,10 @@ final class PreviewWebView: NSView {
     private func load(script: String, plugin: InstalledPlugin, rules: WKContentRuleList?) {
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .nonPersistent()
+        config.mediaTypesRequiringUserActionForPlayback = []   // previews autoplay, like quick look's own video panel
+        if let file = currentFile {
+            config.setURLSchemeHandler(FileStreamHandler(file: file), forURLScheme: StreamInput.scheme)
+        }
         let controller = WKUserContentController()
         controller.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         controller.add(WeakMessageHandler(self), name: Bridge.messageHandlerName)

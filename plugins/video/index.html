@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; color: #ddd; font: 13px -apple-system, sans-serif; overflow: hidden; }
+    video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+    #bar { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 10px; background: rgba(0,0,0,0.55); color: #ccc; font-variant-numeric: tabular-nums; display: flex; gap: 14px; opacity: 0; transition: opacity .2s; }
+    body:hover #bar { opacity: 1; }
+  </style>
+</head>
+<body>
+  <video id="v" autoplay playsinline controls></video>
+  <div id="bar"><span id="dims"></span><span id="dur"></span><span id="codec"></span></div>
+  <script src="index.js"></script>
+</body>
+</html>

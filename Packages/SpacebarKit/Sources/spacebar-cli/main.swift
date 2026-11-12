@@ -41,6 +41,7 @@ do {
         case .plist(let o): value = o
         case .sqlite(let o): value = o
         case .archive(let o), .epub(let o): value = o
+        case .stream(let u): value = u.absoluteString
         }
         let data = try JSONSerialization.data(withJSONObject: value, options: [.fragmentsAllowed, .prettyPrinted, .sortedKeys])
         FileHandle.standardOutput.write(data)

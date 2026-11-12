@@ -67,7 +67,9 @@
       var sampleURL = "../samples/" + sample;
       var data, size;
       try {
-        if (manifest.input === "sqlite" || manifest.input === "plist") {
+        if (manifest.input === "stream") {
+          data = sampleURL; size = 0;   // the browser serves the sample itself; same idea as the host's stream url
+        } else if (manifest.input === "sqlite" || manifest.input === "plist") {
           var dump = await fetch(sampleURL + ".json");
           if (!dump.ok) throw new Error(dump.status);
           data = await dump.json();

@@ -78,7 +78,7 @@ plugins folder ("open plugins folder" in the app). folder name = `id`.
 - `matches.extensions`: lowercase, no dot. `matches.utis` optional.
   an exact uti match beats an extension match; within a tier the enabled
   plugin with the highest `priority` wins, ties go alphabetically by id
-- `input`: `text` | `bytes` | `json` | `plist` | `sqlite` | `archive` | `epub`, see below
+- `input`: `text` | `bytes` | `json` | `plist` | `sqlite` | `archive` | `epub` | `stream`, see below
 - `maxFileSize`: bytes, default 50 MB. bigger files get an error view,
   the plugin never runs
 - `entry`: default `index.html`
@@ -210,6 +210,19 @@ depth/node caps and entity declarations are rejected. Archive reads share a
 four-second budget checked between reads. `truncated` means sections or images
 were omitted; the viewer labels the excerpt. The bundled plugin accepts EPUBs
 up to 256 MiB.
+
+
+### stream (host 0.3.0+)
+
+The host does not read the file. `spacebar.data` is the string
+`spacebar-file:///current`, a url on the host's private scheme that serves
+the previewed file with http range support (206 responses, `Accept-Ranges`,
+a mime type from the file's uti). Point a `<video>`, `<audio>`, `<img>` or
+`fetch()` at it. Nothing is base64'd, seeking works, gigabyte files are fine
+(`maxFileSize` still applies, set it high). Media autoplays: the host turns
+off the user-gesture requirement. WebKit decides what decodes: on macOS 15
+that is WebM with VP8/VP9 video and Opus/Vorbis audio, not MKV, not AV1.
+The bundled `video` plugin is the whole example (`plugins/video/index.js`).
 
 ## rules
 

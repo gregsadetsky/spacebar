@@ -11,6 +11,8 @@ samples/*.geojson
 samples/*.sqlite3
 samples/*.sqlite3-*
 samples/*.db
+samples/*.webm
+!samples/fixtures/
 samples/*.json
 samples/*.plist
 .swiftpm/

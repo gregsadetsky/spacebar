@@ -40,6 +40,8 @@ public enum InputPayload {
     case sqlite([String: Any])
     case archive([String: Any])
     case epub([String: Any])
+    /// the host serves the file itself over its private url scheme; the plugin gets the url
+    case stream(URL)
 
     public var kind: InputKind {
         switch self {
@@ -50,6 +52,7 @@ public enum InputPayload {
         case .sqlite: return .sqlite
         case .archive: return .archive
         case .epub: return .epub
+        case .stream: return .stream
         }
     }
 }
@@ -75,6 +78,7 @@ public enum InputLoader {
         case .sqlite: return try SQLiteInput.load(url: url, manifest: manifest)
         case .archive: return try ArchiveInput.load(url: url, manifest: manifest)
         case .epub: return try EPUBInput.load(url: url, manifest: manifest)
+        case .stream: return try StreamInput.load(url: url, manifest: manifest)
         }
     }
 

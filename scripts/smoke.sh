@@ -28,7 +28,7 @@ preview() {  # <file> -> prints the "rendered ..." log line
   qlmanage -p "$1" >/dev/null 2>&1 & local pid=$!
   sleep "${SMOKE_WAIT:-4}"; kill $pid 2>/dev/null; wait $pid 2>/dev/null
   sleep 0.5
-  $LOG show --info --start "$start" --predicate 'subsystem == "io.spacebar"' --style compact 2>/dev/null | grep -E "rendered|network check" | sed 's/.*extension\] //'
+  $LOG show --info --start "$start" --predicate 'subsystem == "io.spacebar"' --style compact 2>/dev/null | grep -E "rendered|network check|playing t=" | sed 's/.*extension\] //'
 }
 expect() {  # <file> <regex>
   local out; out=$(preview "$1")
@@ -85,6 +85,12 @@ expect samples/captions.vtt 'plugin=subtitles .* outcome=done'
 expect samples/unicode.srt 'plugin=subtitles .* outcome=done'
 expect samples/invalid.srt 'plugin=subtitles .* outcome=failed:'
 expect samples/notadb.db       'plugin=sqlite ext=db .* outcome=host error: not a SQLite database'
+
+echo "== video through the extension (stream input, autoplay)"
+SMOKE_WAIT=5 expect samples/clip-vp9.webm 'plugin=video ext=webm .* outcome=done'
+SMOKE_WAIT=5 expect samples/clip-vp9.webm '\[video\] playing t='
+SMOKE_WAIT=5 expect samples/clip-vp8.webm '\[video\] playing t='
+expect samples/notavideo.webm 'plugin=video ext=webm .* outcome=failed: .*not supported'
 
 echo "== matcher via cli"
 if $CLI match samples/cities.geojson | grep -q "^geojson"; then pass "cli match geojson"; else bad "cli match geojson"; fi

@@ -243,27 +243,16 @@ by `samples/make_documents.py`; limits are documented in PLUGINS.md.
   subtitles) from shared code; the folder name is historical. rename to
   `tools/plugins-build/` or similar and say so in PLUGINS.md.
 
-## video / audio previews (webm, mkv), measured 2026-11-12 on macos 15.7 in a WKWebView
+## video / audio previews
 
-- utis are system declared: `org.webmproject.webm`, `org.matroska.mkv`,
-  `org.xiph.opus`, `org.xiph.flac`, `org.videolan.ogg-audio` (all conform
-  to movie/audio), so claiming them is just an Info.plist entry.
-- what WebKit decodes here with a plain `<video>`: VP8 + Vorbis, VP8 +
-  Opus, Opus alone, and **VP9 profile 0 (yuv420p)**, which is what chrome
-  recordings and youtube downloads are. verified with ffmpeg encodes and a
-  public big buck bunny vp9 sample, all play to the end. what does not
-  decode: VP9 profile 1 with an RGB (gbrp) pixel format (my first test
-  files, an ffmpeg artifact of encoding an rgb test pattern; metadata loads,
-  then nothing, play() never settles, canPlayType still says "probably").
-  AV1: no. mkv: error 4, unsupported, as expected.
-- autoplay with sound is a one-liner on the host
-  (`mediaTypesRequiringUserActionForPlayback = []`), verified in the probe.
-- the file has to reach the page without base64: a host url scheme handler
-  (`WKURLSchemeHandler`, e.g. `spacebar-file://current`) streaming the
-  previewed file with Range support, as a new `input: "stream"` kind. useful
-  for any big file (audio, pdf, images too). sandbox: unknown whether media
-  decoding works in the extension's GPU process; first spike = hello plugin
-  with a vp8 webm through the real extension.
-- verdict: webm (vp8 or vp9) is cheap once the stream input exists; at the
-  ~5 MB files greg has, even today's `bytes` input + a Blob url would do as
-  a first version. mkv is out without a full js/wasm decode stack.
+- done in 0.3.0: `stream` input (host serves the file over `spacebar-file://`
+  with range support, autoplay on) and a `video` plugin for `.webm`.
+  verified through the real extension with a yt-dlp youtube clip (vp9 +
+  opus) and vp8/vorbis: frames play ("playing t=…" in the log), a fake .webm
+  gets the error view.
+- not decodable by WebKit on macos 15: mkv (container), av1, and vp9 profile
+  1 / rgb (an ffmpeg artifact, not a real-world case). mkv would need a
+  js/wasm decode stack; not planned.
+- next: audio (`.opus`, `.flac`, `.ogg`, `.m4a`?) is the same plugin with an
+  `<audio>` element and a waveform or just controls; claim the utis and
+  test each codec. pdf and large images could also use the stream input.

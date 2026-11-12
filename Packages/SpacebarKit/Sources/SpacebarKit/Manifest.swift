@@ -1,7 +1,7 @@
 import Foundation
 
 public enum InputKind: String, Codable, CaseIterable, Sendable {
-    case text, bytes, json, plist, sqlite, archive, epub
+    case text, bytes, json, plist, sqlite, archive, epub, stream
 }
 
 public enum ManifestError: Error, Equatable, CustomStringConvertible {

@@ -36,6 +36,7 @@ Shipped with the app:
 - `.zip` `.tar.gz` `.7z` `.rar` and friends: browse the archive, sizes and dates
 - `.epub`: cover, author, contents and an excerpt
 - `.srt` `.vtt`: subtitle cues with timestamps
+- `.webm`: plays the video (vp8/vp9, opus/vorbis)
 
 Want to write your own? See [PLUGINS.md](https://github.com/gregsadetsky/spacebar/blob/main/PLUGINS.md)
 

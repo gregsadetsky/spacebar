@@ -1,0 +1,13 @@
+{
+  "id": "video",
+  "name": "Video",
+  "version": "0.1.0",
+  "matches": {
+    "extensions": ["webm"],
+    "utis": ["org.webmproject.webm"]
+  },
+  "input": "stream",
+  "maxFileSize": 4294967296,
+  "entry": "index.html",
+  "requiresHost": "0.3.0"
+}
