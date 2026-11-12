@@ -248,13 +248,14 @@ by `samples/make_documents.py`; limits are documented in PLUGINS.md.
 - utis are system declared: `org.webmproject.webm`, `org.matroska.mkv`,
   `org.xiph.opus`, `org.xiph.flac`, `org.videolan.ogg-audio` (all conform
   to movie/audio), so claiming them is just an Info.plist entry.
-- what WebKit decodes here with a plain `<video>`: VP8 + Vorbis plays, VP8 +
-  Opus plays, Opus alone plays. **VP9 does not**: metadata loads (size,
-  duration) and then nothing, play() never settles, even though
-  `canPlayType` says "probably" and WebCodecs `VideoDecoder.isConfigSupported`
-  says yes for vp09. so the decoder exists in the process but the media
-  element doesn't use it (safari has a switch for this that third-party web
-  views apparently don't get). mkv: error 4, unsupported, as expected.
+- what WebKit decodes here with a plain `<video>`: VP8 + Vorbis, VP8 +
+  Opus, Opus alone, and **VP9 profile 0 (yuv420p)**, which is what chrome
+  recordings and youtube downloads are. verified with ffmpeg encodes and a
+  public big buck bunny vp9 sample, all play to the end. what does not
+  decode: VP9 profile 1 with an RGB (gbrp) pixel format (my first test
+  files, an ffmpeg artifact of encoding an rgb test pattern; metadata loads,
+  then nothing, play() never settles, canPlayType still says "probably").
+  AV1: no. mkv: error 4, unsupported, as expected.
 - autoplay with sound is a one-liner on the host
   (`mediaTypesRequiringUserActionForPlayback = []`), verified in the probe.
 - the file has to reach the page without base64: a host url scheme handler
@@ -263,13 +264,6 @@ by `samples/make_documents.py`; limits are documented in PLUGINS.md.
   for any big file (audio, pdf, images too). sandbox: unknown whether media
   decoding works in the extension's GPU process; first spike = hello plugin
   with a vp8 webm through the real extension.
-- vp9 options, in order of effort: (1) find the WebKit feature flag for the
-  vp9 media element path (private `_WKFeature` api; my enumeration probe
-  segfaulted, needs care); (2) WebCodecs path: small js webm demuxer →
-  VideoDecoder → canvas, audio via a wasm opus decoder + WebAudio (no
-  AudioDecoder in this WebKit); (3) MediaSource looked promising
-  (`isTypeSupported` true) but the source never attaches in WKWebView here
-  (sourceopen never fires, error 4), unexplained.
-- verdict: webm with vp8 is cheap once the stream input exists; vp9 (the
-  common case: chrome recordings, youtube downloads) is the real work; mkv
-  is out without a full js/wasm decode stack.
+- verdict: webm (vp8 or vp9) is cheap once the stream input exists; at the
+  ~5 MB files greg has, even today's `bytes` input + a Blob url would do as
+  a first version. mkv is out without a full js/wasm decode stack.
