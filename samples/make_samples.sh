@@ -108,8 +108,8 @@ fi
 
 # video fixtures are committed (ffmpeg is not a build dependency): small
 # testsrc clips, vp9+opus and vp8+vorbis, plus a text file with a .webm name
-cp fixtures/clip-vp9.webm fixtures/clip-vp8.webm fixtures/notavideo.webm .
-echo "video: clip-vp9, clip-vp8, notavideo"
+cp fixtures/clip-vp9.webm fixtures/clip-vp8.webm fixtures/clip-av1.webm fixtures/notavideo.webm .
+echo "video: clip-vp9, clip-vp8, clip-av1 (undecodable on purpose), notavideo"
 
 # payload dump for the browser harness, when the cli has been built
 CLI="../Packages/SpacebarKit/.build/debug/spacebar-cli"

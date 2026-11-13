@@ -36,6 +36,10 @@ final class FileStreamHandler: NSObject, WKURLSchemeHandler {
             "Accept-Ranges": "bytes",
             "Content-Length": String(length),
             "Cache-Control": "no-store",
+            // the page's origin is file://, this url is another scheme: media
+            // elements don't care but fetch() needs cors headers to read it
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Expose-Headers": "Content-Length, Content-Range, Accept-Ranges",
         ]
         if range != nil { headers["Content-Range"] = "bytes \(start)-\(end)/\(size)" }
         guard let response = HTTPURLResponse(url: url, statusCode: range != nil ? 206 : 200, httpVersion: "HTTP/1.1", headerFields: headers) else { return }

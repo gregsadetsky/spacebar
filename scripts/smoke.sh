@@ -90,7 +90,8 @@ echo "== video through the extension (stream input, autoplay)"
 SMOKE_WAIT=5 expect samples/clip-vp9.webm 'plugin=video ext=webm .* outcome=done'
 SMOKE_WAIT=5 expect samples/clip-vp9.webm '\[video\] playing t='
 SMOKE_WAIT=5 expect samples/clip-vp8.webm '\[video\] playing t='
-expect samples/notavideo.webm 'plugin=video ext=webm .* outcome=failed: .*not supported'
+expect samples/clip-av1.webm 'plugin=video ext=webm .* outcome=failed: this WebM is AV1'
+expect samples/notavideo.webm 'plugin=video ext=webm .* outcome=failed: WebKit can.t decode this file'
 
 echo "== matcher via cli"
 if $CLI match samples/cities.geojson | grep -q "^geojson"; then pass "cli match geojson"; else bad "cli match geojson"; fi
