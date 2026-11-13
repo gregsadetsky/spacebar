@@ -250,9 +250,16 @@ by `samples/make_documents.py`; limits are documented in PLUGINS.md.
   verified through the real extension with a yt-dlp youtube clip (vp9 +
   opus) and vp8/vorbis: frames play ("playing t=…" in the log), a fake .webm
   gets the error view.
-- not decodable by WebKit on macos 15: mkv (container), av1, and vp9 profile
-  1 / rgb (an ffmpeg artifact, not a real-world case). mkv would need a
-  js/wasm decode stack; not planned.
+- not decodable by WebKit on macos 15: mkv (container), av1 (no software
+  decoder; hardware av1 only on m3+ and WebKit still said no here), and vp9
+  profile 1 / rgb (an ffmpeg artifact, not a real-world case).
+- av1 via wasm, later: yt-dlp hands out av1 webms by default now, so this is
+  the common failure. a dav1d wasm build in `plugins/video/vendor/`, a small
+  js webm demuxer, decoded frames to a canvas via WebCodecs' VideoFrame or
+  plain ImageData, audio stays on the `<audio>` element (opus plays). fine at
+  320x240, probably too slow for 1080p on the 3 s budget (metadata first,
+  frames after done() is allowed). mkv could ride on the same demuxer. the
+  current message tells people to re-download with `-S vcodec:vp9`.
 - next: audio (`.opus`, `.flac`, `.ogg`, `.m4a`?) is the same plugin with an
   `<audio>` element and a waveform or just controls; claim the utis and
   test each codec. pdf and large images could also use the stream input.
